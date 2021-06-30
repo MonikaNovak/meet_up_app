@@ -4,19 +4,15 @@ import 'package:meet_up_vor_2/api/models/User.dart';
 
 import '../constants.dart';
 
-class UserProfileScreen extends StatefulWidget {
-/*  late final User userFinal;
-
-  UserProfileScreen(this.userFinal);*/
-
+class FriendProfileScreen extends StatefulWidget {
   @override
-  _UserProfileScreenState createState() => _UserProfileScreenState();
+  _FriendProfileScreenState createState() => _FriendProfileScreenState();
 }
 
-class _UserProfileScreenState extends State<UserProfileScreen> {
+class _FriendProfileScreenState extends State<FriendProfileScreen> {
   @override
   Widget build(BuildContext context) {
-    final userFinal = ModalRoute.of(context)!.settings.arguments as User;
+    final arguments = ModalRoute.of(context)!.settings.arguments as List;
     return Scaffold(
       appBar: AppBar(
         leading: BackButton(
@@ -43,14 +39,16 @@ class _UserProfileScreenState extends State<UserProfileScreen> {
                 children: <Widget>[
                   CircleAvatar(
                     radius: 50.0,
-                    backgroundImage: new NetworkImage(userFinal.avatarUrl),
+                    backgroundImage: new NetworkImage(arguments[0]),
                   ),
                   SizedBox(width: 20.0),
-                  Text(
-                    /*'test',*/
-                    userFinal.userName,
-                    style:
-                        TextStyle(fontWeight: FontWeight.bold, fontSize: 24.0),
+                  Flexible(
+                    child: Text(
+                      arguments[1],
+                      style: TextStyle(
+                          fontWeight: FontWeight.bold, fontSize: 24.0),
+                      overflow: TextOverflow.fade,
+                    ),
                   ),
                 ],
               ),
@@ -65,7 +63,7 @@ class _UserProfileScreenState extends State<UserProfileScreen> {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: <Widget>[
                   Text('email address'),
-                  Text(userFinal.email),
+                  Text(arguments[2]),
                 ],
               ),
             ),
@@ -79,14 +77,14 @@ class _UserProfileScreenState extends State<UserProfileScreen> {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: <Widget>[
                   Text('status'),
-                  Text(userFinal.status),
+                  Text(arguments[3]),
                 ],
               ),
             ),
             SizedBox(
               height: 20.0,
             ),
-            Row(
+            /*Row(
               mainAxisAlignment: MainAxisAlignment.end,
               children: <Widget>[
                 TextButton(
@@ -117,7 +115,7 @@ class _UserProfileScreenState extends State<UserProfileScreen> {
                   ),
                 ),
               ],
-            ),
+            ),*/
           ],
         ),
       ),

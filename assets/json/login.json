@@ -1,7 +1,41 @@
 {
-  "id": "748927abcde",
-  "userName" : "moni",
+  "token" : "123456789",
+  "name" : "monika.n",
+  "displayName" : "moni",
   "email" : "myemail@gmal.com",
-  "avatar" : "https://i.ibb.co/KXk487n/cof.jpg",
-  "status" : "So call me maybe!"
+  "profilImage" : "https://i.ibb.co/KXk487n/cof.jpg",
+  "status" : 1,
+  "statusMessage" : "So call me maybe!",
+  "friendslist" : [
+    {
+      "name": "Leon Barret",
+      "email": "leon.barrett@example.com",
+      "picture": {
+        "large": "https://randomuser.me/api/portraits/men/29.jpg",
+        "medium": "https://randomuser.me/api/portraits/med/men/29.jpg",
+        "thumbnail": "https://randomuser.me/api/portraits/thumb/men/29.jpg"
+      },
+      "status": "I like lemon ice-cream."
+    },
+    {
+      "name": "Ramon Peck",
+      "email": "ramon.peck@example.com",
+      "picture": {
+        "large": "https://randomuser.me/api/portraits/men/6.jpg",
+        "medium": "https://randomuser.me/api/portraits/med/men/6.jpg",
+        "thumbnail": "https://randomuser.me/api/portraits/thumb/men/6.jpg"
+      },
+      "status": "I like chocolate ice-cream."
+    },
+    {
+      "name": "Ross Bryant",
+      "email": "ross.bryant@example.com",
+      "picture": {
+        "large": "https://randomuser.me/api/portraits/men/99.jpg",
+        "medium": "https://randomuser.me/api/portraits/med/men/99.jpg",
+        "thumbnail": "https://randomuser.me/api/portraits/thumb/men/99.jpg"
+      },
+      "status": "I like strawberry ice-cream."
+    }
+  ]
 }

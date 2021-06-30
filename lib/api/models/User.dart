@@ -1,28 +1,27 @@
-class User {
-  final String id;
-  final String userName;
-  final String email;
-  final String avatarUrl;
-  final String status;
-  final messages;
+import 'Friend.dart';
 
-  User(this.id, this.userName, this.email, this.avatarUrl, this.status,
-      this.messages);
+class User {
+  final String name;
+  final String displayName;
+  final String email;
+  final String profilImage;
+  final int status;
+  final String statusMessage;
+  final messages;
+  final List<Friend> friends;
+
+  User(this.name, this.displayName, this.email, this.profilImage, this.status,
+      this.statusMessage, this.messages, this.friends);
 
   User.fromJson(Map<String, dynamic> json)
-      : id = json['id'],
-        userName = json['userName'],
+      : name = json['name'],
+        displayName = json['displayName'],
         email = json['email'],
-        avatarUrl = json['avatar'],
+        profilImage = json['profilImage'],
         status = json['status'],
-        messages = json['messages'];
-
-  Map<String, dynamic> toJson() => {
-        'userName': userName,
-        'email': email,
-      };
-
-  String getUserName() {
-    return userName;
-  }
+        statusMessage = json['statusMessage'],
+        messages = json['messages'],
+        friends = (json['friendslist'] as List<dynamic>)
+            .map((e) => Friend.fromJson(e))
+            .toList();
 }

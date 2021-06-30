@@ -51,13 +51,26 @@ class _GroupDetailState extends State<GroupDetail> {
             SizedBox(
               height: 10.0,
             ),
-            TextButton(
-              child: Text(
-                'show members',
-              ),
-              onPressed: () {
-                Navigator.pushNamed(context, 'group_members');
-              },
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: <Widget>[
+                TextButton(
+                  child: Text(
+                    'show members',
+                  ),
+                  onPressed: () {
+                    Navigator.pushNamed(context, 'group_members');
+                  },
+                ),
+                TextButton(
+                  child: Text(
+                    'leave group',
+                  ),
+                  onPressed: () {
+                    Navigator.pushNamed(context, 'group_members');
+                  },
+                ),
+              ],
             ),
             Expanded(
               child: ListView.separated(

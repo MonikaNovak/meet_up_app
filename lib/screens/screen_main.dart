@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:meet_up_vor_2/api/models/Friend.dart';
+import 'package:meet_up_vor_2/api/models/Token.dart';
 import 'package:meet_up_vor_2/api/models/User.dart';
 import 'package:meet_up_vor_2/components/app_bar.dart';
 import 'package:meet_up_vor_2/screens/page_friendlist.dart';
@@ -9,8 +11,6 @@ import 'page_home.dart';
 import 'page_groups.dart';
 
 class MainScreen extends StatefulWidget {
-/*  late final int pageIndex = 0;
-  late final List<Widget> pageList;*/
   late final ValueNotifier<int> _indexNotifier = ValueNotifier(0);
 
   @override
@@ -20,9 +20,11 @@ class MainScreen extends StatefulWidget {
 class _MainScreenState extends State<MainScreen> {
   @override
   Widget build(BuildContext context) {
-    logger.d("Rebuild main screen"); // console feedback
-    final user = ModalRoute.of(context)!.settings.arguments as User;
+    //logger.d("Rebuild main screen"); // console feedback
 
+    // user from json
+    /*final user = ModalRoute.of(context)!.settings.arguments
+        as User; //get user from local json
     Widget _buildBody(int index) {
       switch (index) {
         case 0:
@@ -31,7 +33,7 @@ class _MainScreenState extends State<MainScreen> {
           }
         case 1:
           {
-            return new PeoplePage();
+            return new PeoplePage(user);
           }
         case 2:
           {
@@ -39,35 +41,51 @@ class _MainScreenState extends State<MainScreen> {
           }
         case 3:
           {
-            return new ChatPage(user);
+            return new EventPage(user);
           }
       }
       // last return is only a fallback but should not happen
       return new HomePage(user);
-    }
+    }*/
 
-    /*widget.pageList = <Widget>[
-      HomePage(user),
-      PeoplePage(),
-      LocationPage(),
-      ChatPage(),
-    ];*/
+    // from rest API
+    final token = ModalRoute.of(context)!.settings.arguments as Token;
+
+    Widget _buildBody(int index) {
+      switch (index) {
+        case 0:
+          {
+            return new HomePage(token);
+          }
+        case 1:
+          {
+            return new PeoplePage(token);
+          }
+        case 2:
+          {
+            return new GroupsPage(token);
+          }
+        case 3:
+          {
+            return new EventPage(token);
+          }
+      }
+      // last return is only a fallback but should not happen
+      return new HomePage(token);
+    }
 
     return ValueListenableBuilder(
       valueListenable: widget._indexNotifier,
       builder: (BuildContext context, int index, Widget? child) {
         logger.d("building main screen body");
         return Scaffold(
-          appBar: MyAppBar(user),
+          appBar: MyAppBar(token),
           body: _buildBody(index),
           /*body: widget.pageList[index],*/
           bottomNavigationBar: BottomNavigationBar(
             currentIndex: index,
             onTap: (value) {
               widget._indexNotifier.value = value;
-// setState(() {
-//   pageIndex = value;
-// });
             },
             type: BottomNavigationBarType.fixed,
             showUnselectedLabels: true,
@@ -84,7 +102,7 @@ class _MainScreenState extends State<MainScreen> {
                   icon: Icon(
                     Icons.people,
                   ),
-                  label: 'people'),
+                  label: 'friends'),
               BottomNavigationBarItem(
                   icon: Icon(
                     Icons.wc,

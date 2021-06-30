@@ -1,24 +1,31 @@
 import 'package:flutter/material.dart';
+import 'package:meet_up_vor_2/api/models/Token.dart';
 import 'package:meet_up_vor_2/api/models/User.dart';
-import 'package:meet_up_vor_2/components/app_bar.dart';
+import 'package:meet_up_vor_2/api/providers/LoginProvider.dart';
+import 'package:meet_up_vor_2/api/api_client.dart';
 
 class GroupsPage extends StatefulWidget {
-  late final User userFinal;
+  late final Token token;
+  GroupsPage(this.token);
 
-  GroupsPage(this.userFinal) {
-    print(
-        'feedback user name passed to group page: ' + userFinal.getUserName());
-  }
+  late final User userFinal;
 
   @override
   _GroupsPageState createState() => _GroupsPageState();
 }
 
 class _GroupsPageState extends State<GroupsPage> {
+  Future<User?> _getUserData(Token token) async {
+    if (token.token == '123456789') {
+      var userFinal = await LoginProvider(Client().init()).login();
+      return userFinal;
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
+    widget.userFinal = _getUserData(widget.token) as User;
     return Scaffold(
-/*      appBar: MyAppBar(),*/
       body: SafeArea(
         minimum: EdgeInsets.all(20.0),
         child: Column(

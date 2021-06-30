@@ -1,23 +1,58 @@
+/*import 'dart:html';*/
+import 'dart:io';
+
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
+import 'package:meet_up_vor_2/api/models/Token.dart';
 import 'package:meet_up_vor_2/api/models/User.dart';
+import 'package:meet_up_vor_2/api/providers/LoginProvider.dart';
 import 'package:meet_up_vor_2/components/app_bar.dart';
-
+import 'package:image_cropper/image_cropper.dart';
+import 'package:image_picker/image_picker.dart';
 import '../constants.dart';
+import 'package:meet_up_vor_2/api/api_client.dart';
 
 class UserProfileScreen extends StatefulWidget {
-/*  late final User userFinal;
-
-  UserProfileScreen(this.userFinal);*/
-
   @override
   _UserProfileScreenState createState() => _UserProfileScreenState();
 }
 
 class _UserProfileScreenState extends State<UserProfileScreen> {
+  late final token;
+  late final userFinal;
+  Future<User> _getUser(Token token) async {
+    var userFuture;
+    if (token.token == '123456789') {
+      userFuture = await LoginProvider(Client().init()).login() as User;
+    }
+    return userFuture;
+  }
+
+  void _defineUser() async {
+    userFinal = await _getUser(token);
+  }
+
   @override
   Widget build(BuildContext context) {
-    final userFinal = ModalRoute.of(context)!.settings.arguments as User;
+    var token = ModalRoute.of(context)!.settings.arguments as Token;
+    _defineUser();
+    return FutureBuilder<User>(
+        future: _getUser(token),
+        builder: (context, snapshot) {
+          switch (snapshot.connectionState) {
+            case ConnectionState.waiting:
+              return Text('loading...');
+            default:
+              if (snapshot.hasError)
+                return Text('Error: ${snapshot.error}');
+              else
+                return _buildWidget();
+          }
+        });
+  }
+
+  Widget _buildWidget() {
     return Scaffold(
       appBar: AppBar(
         leading: BackButton(
@@ -44,14 +79,40 @@ class _UserProfileScreenState extends State<UserProfileScreen> {
                   children: <Widget>[
                     CircleAvatar(
                       radius: 50.0,
-                      backgroundImage: new NetworkImage(userFinal.avatarUrl),
+                      backgroundImage: new NetworkImage(userFinal.profilImage),
+                      child: Align(
+                        alignment: Alignment.bottomRight,
+                        child: CircleAvatar(
+                          backgroundColor: Colors.white,
+                          radius: 15.0,
+                          child: IconButton(
+                            onPressed: () {
+                              Navigator.pushNamed(context, 'image_capture',
+                                  arguments: userFinal);
+                            },
+                            iconSize: 12.0,
+                            icon: Icon(
+                              Icons.camera_alt,
+                              size: 15.0,
+                              color: Colors.grey.shade600,
+                            ),
+                          ),
+                        ),
+                      ),
                     ),
                     SizedBox(width: 20.0),
-                    Text(
-                      /*'test',*/
-                      userFinal.userName,
-                      style: TextStyle(
-                          fontWeight: FontWeight.bold, fontSize: 24.0),
+                    Column(
+                      children: <Widget>[
+                        Text(
+                          /*'test',*/
+                          userFinal.displayName,
+                          style: TextStyle(
+                              fontWeight: FontWeight.bold, fontSize: 24.0),
+                        ),
+                        Text(
+                          'username',
+                        )
+                      ],
                     ),
                   ],
                 ),
@@ -80,7 +141,7 @@ class _UserProfileScreenState extends State<UserProfileScreen> {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: <Widget>[
                     Text('status'),
-                    Text(userFinal.status),
+                    Text(userFinal.statusMessage),
                   ],
                 ),
               ),
