@@ -6,6 +6,9 @@ import 'package:meet_up_vor_2/constants.dart';
 import 'package:meet_up_vor_2/screens/screen_main.dart';
 import 'package:meet_up_vor_2/api/api_client.dart';
 
+// TODO why console prints feedback already at login?
+// TODO upcoming events
+
 class HomePage extends StatefulWidget {
   late final Token token;
   HomePage(this.token);
@@ -43,12 +46,14 @@ class _HomePageState extends State<HomePage> {
         builder: (context, snapshot) {
           switch (snapshot.connectionState) {
             case ConnectionState.waiting:
-              return Text('loading...');
+              return CircularProgressIndicator();
             default:
               if (snapshot.hasError)
                 return Text('Error: ${snapshot.error}');
               else
-                return _buildWidget();
+                print('feedback - build homepage, user: ' +
+                    widget.userFinal.name);
+              return _buildWidget();
           }
         });
   }
@@ -73,8 +78,7 @@ class _HomePageState extends State<HomePage> {
                   ),
                   SizedBox(width: 20.0),
                   Text(
-                    /*userFinal.displayName,*/
-                    'text',
+                    widget.userFinal.displayName,
                     style:
                         TextStyle(fontWeight: FontWeight.bold, fontSize: 24.0),
                   ),

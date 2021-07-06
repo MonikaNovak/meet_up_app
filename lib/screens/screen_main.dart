@@ -59,7 +59,8 @@ class _MainScreenState extends State<MainScreen> {
           }
         case 1:
           {
-            return new PeoplePage(token);
+            //return new PeoplePage(token); changed for stream builder test
+            return new FriendListPage(token);
           }
         case 2:
           {
@@ -74,12 +75,13 @@ class _MainScreenState extends State<MainScreen> {
       return new HomePage(token);
     }
 
+    var appBar = MyAppBar(token);
+
     return ValueListenableBuilder(
       valueListenable: widget._indexNotifier,
       builder: (BuildContext context, int index, Widget? child) {
-        logger.d("building main screen body");
         return Scaffold(
-          appBar: MyAppBar(token),
+          appBar: appBar,
           body: _buildBody(index),
           /*body: widget.pageList[index],*/
           bottomNavigationBar: BottomNavigationBar(

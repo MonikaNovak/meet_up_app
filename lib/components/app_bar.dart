@@ -36,10 +36,16 @@ class MyAppBar extends StatelessWidget implements PreferredSizeWidget {
         builder: (context, snapshot) {
           switch (snapshot.connectionState) {
             case ConnectionState.waiting:
-              return Text('loading...');
+              return AppBar(
+                backgroundColor: Colors.deepPurple,
+                leading: CircularProgressIndicator(),
+              );
             default:
               if (snapshot.hasError)
-                return Text('Error: ${snapshot.error}');
+                return AppBar(
+                  backgroundColor: Colors.deepPurple,
+                  leading: Text('Error: ${snapshot.error}'),
+                );
               else
                 return AppBar(
                   backgroundColor: Colors.deepPurple,

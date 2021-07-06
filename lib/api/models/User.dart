@@ -1,4 +1,5 @@
 import 'Friend.dart';
+import 'Group.dart';
 
 class User {
   final String name;
@@ -9,9 +10,10 @@ class User {
   final String statusMessage;
   final messages;
   final List<Friend> friends;
+  final List<Group> groups;
 
   User(this.name, this.displayName, this.email, this.profilImage, this.status,
-      this.statusMessage, this.messages, this.friends);
+      this.statusMessage, this.messages, this.friends, this.groups);
 
   User.fromJson(Map<String, dynamic> json)
       : name = json['name'],
@@ -23,5 +25,8 @@ class User {
         messages = json['messages'],
         friends = (json['friendslist'] as List<dynamic>)
             .map((e) => Friend.fromJson(e))
+            .toList(),
+        groups = (json['groupslist'] as List<dynamic>)
+            .map((e) => Group.fromJson(e))
             .toList();
 }

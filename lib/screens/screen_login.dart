@@ -7,12 +7,12 @@ import 'screen_register.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
 
-class WelcomeScreen extends StatefulWidget {
+class LoginScreen extends StatefulWidget {
   @override
-  _WelcomeScreenState createState() => _WelcomeScreenState();
+  _LoginScreenState createState() => _LoginScreenState();
 }
 
-class _WelcomeScreenState extends State<WelcomeScreen> {
+class _LoginScreenState extends State<LoginScreen> {
   //
   //
   // USE LOCAL OR REST API: 0 for local, 1 for api
@@ -101,7 +101,6 @@ class _WelcomeScreenState extends State<WelcomeScreen> {
                       onSaved: (value) {
                         setState(() {
                           userName = value!;
-                          print(userName);
                         });
                       },
                     ),
@@ -152,7 +151,6 @@ class _WelcomeScreenState extends State<WelcomeScreen> {
                         } else if (useApi == 1) {
                           token = await _getToken(userName, userPassword);
                         }
-                        print(token.token);
 
                         final message = 'Logged in as: $userName';
                         final snackBar = SnackBar(

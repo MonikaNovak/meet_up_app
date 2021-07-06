@@ -1,14 +1,17 @@
 class Friend {
   final String email;
   final String name;
+  final String displayName;
   final String profileImageUrl;
-  final String status;
+  final String statusMessage;
 
-  const Friend(this.name, this.email, this.profileImageUrl, this.status);
+  const Friend(this.name, this.email, this.profileImageUrl, this.statusMessage,
+      this.displayName);
 
   Friend.fromJson(Map<String, dynamic> json)
       : name = json['name'],
-        profileImageUrl = json['picture']['large'],
+        profileImageUrl = json['profilImage'],
         email = json['email'],
-        status = json['status'];
+        displayName = json['displayName'],
+        statusMessage = json['statusMessage'];
 }

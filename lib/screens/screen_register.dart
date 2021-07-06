@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:meet_up_vor_2/api/models/Token.dart';
 import 'package:meet_up_vor_2/api/providers/LoginProvider.dart';
 import 'package:meet_up_vor_2/constants.dart';
+
 import 'package:email_validator/email_validator.dart';
 
 class RegisterScreen extends StatefulWidget {

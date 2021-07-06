@@ -8,34 +8,147 @@
   "statusMessage" : "So call me maybe!",
   "friendslist" : [
     {
-      "name": "Leon Barret",
+      "displayName": "Leon",
+      "name" : "leonido24",
       "email": "leon.barrett@example.com",
-      "picture": {
-        "large": "https://randomuser.me/api/portraits/men/29.jpg",
-        "medium": "https://randomuser.me/api/portraits/med/men/29.jpg",
-        "thumbnail": "https://randomuser.me/api/portraits/thumb/men/29.jpg"
-      },
-      "status": "I like lemon ice-cream."
+      "profilImage": "https://randomuser.me/api/portraits/men/29.jpg",
+      "statusMessage": "I like lemon ice-cream."
     },
     {
-      "name": "Ramon Peck",
+      "displayName": "Ramon",
+      "name" : "ramanid",
       "email": "ramon.peck@example.com",
-      "picture": {
-        "large": "https://randomuser.me/api/portraits/men/6.jpg",
-        "medium": "https://randomuser.me/api/portraits/med/men/6.jpg",
-        "thumbnail": "https://randomuser.me/api/portraits/thumb/men/6.jpg"
-      },
-      "status": "I like chocolate ice-cream."
+      "profilImage": "https://randomuser.me/api/portraits/men/6.jpg",
+      "statusMessage": "I like chocolate ice-cream."
     },
     {
-      "name": "Ross Bryant",
+      "displayName": "Rossi",
+      "name" : "rossalinda",
       "email": "ross.bryant@example.com",
-      "picture": {
-        "large": "https://randomuser.me/api/portraits/men/99.jpg",
-        "medium": "https://randomuser.me/api/portraits/med/men/99.jpg",
-        "thumbnail": "https://randomuser.me/api/portraits/thumb/men/99.jpg"
-      },
-      "status": "I like strawberry ice-cream."
+      "profilImage": "https://randomuser.me/api/portraits/women/99.jpg",
+      "statusMessage": "I like strawberry ice-cream."
+    },
+    {
+      "displayName": "Barret",
+      "name" : "barretoo",
+      "email": "leon.barrett@example.com",
+      "profilImage": "https://randomuser.me/api/portraits/men/62.jpg",
+      "statusMessage": "I like cherry ice-cream."
+    },
+    {
+      "displayName": "Pecky",
+      "name" : "pickle",
+      "email": "ramon.peck@example.com",
+      "profilImage": "https://randomuser.me/api/portraits/women/85.jpg",
+      "statusMessage": "I like vanilla ice-cream."
+    },
+    {
+      "displayName": "Bryant",
+      "name" : "bumblebee",
+      "email": "ross.bryant@example.com",
+      "profilImage": "https://randomuser.me/api/portraits/men/47.jpg",
+      "statusMessage": "I like ginger ice-cream."
+    },
+    {
+      "displayName": "Nico",
+      "name" : "nicolatesla",
+      "email": "leon.barrett@example.com",
+      "profilImage": "https://randomuser.me/api/portraits/men/22.jpg",
+      "statusMessage": "I like poppy ice-cream."
+    },
+    {
+      "displayName": "Luca",
+      "name" : "lucid",
+      "email": "ramon.peck@example.com",
+      "profilImage": "https://randomuser.me/api/portraits/men/46.jpg",
+      "statusMessage": "I like smurf ice-cream."
+    },
+    {
+      "displayName": "Rami",
+      "name" : "ramona.mona",
+      "email": "ross.bryant@example.com",
+      "profilImage": "https://randomuser.me/api/portraits/women/55.jpg",
+      "statusMessage": "I like caramel ice-cream."
+    }
+  ],
+  "groupslist" :[
+    {
+      "groupName" : "The crazy people",
+      "groupImageUrl" : "https://www.jolie.de/sites/default/files/styles/facebook/public/images/2017/07/14/partypeople.jpg?itok=H8Kltq60",
+      "id" : "1111",
+      "adminUsername" : "monika.n",
+      "eventslist" : [
+        {
+          "eventName" : "Gin degustation",
+          "id" : "aaaa",
+          "time" : "Fr 2.7.2021",
+          "location" : "Blabla street 42, Blablacity"
+        },
+        {
+          "eventName" : "Whiskey degustation",
+          "id" : "bbbb",
+          "time" : "Fr 9.7.2021",
+          "location" : "Huhu street 10, Huhucity"
+        },
+        {
+          "eventName" : "Beer degustation",
+          "id" : "cccc",
+          "time" : "Fr 16.7.2021",
+          "location" : "Hehe street 42, Hehecity"
+        }
+      ]
+    },
+    {
+      "groupName" : "The weird people",
+      "groupImageUrl" : "https://www.jolie.de/sites/default/files/styles/facebook/public/images/2017/07/14/partypeople.jpg?itok=H8Kltq60",
+      "id" : "2222",
+      "adminUsername" : "jimmy",
+      "eventslist" : [
+        {
+          "eventName" : "Gin degustation",
+          "id" : "aaaa",
+          "time" : "Fr 2.7.2021",
+          "location" : "Blabla street 42, Blablacity"
+        },
+        {
+          "eventName" : "Whiskey degustation",
+          "id" : "bbbb",
+          "time" : "Fr 9.7.2021",
+          "location" : "Huhu street 10, Huhucity"
+        },
+        {
+          "eventName" : "Beer degustation",
+          "id" : "cccc",
+          "time" : "Fr 16.7.2021",
+          "location" : "Hehe street 42, Hehecity"
+        }
+      ]
+    },
+    {
+      "groupName" : "The awesome people",
+      "groupImageUrl" : "https://www.jolie.de/sites/default/files/styles/facebook/public/images/2017/07/14/partypeople.jpg?itok=H8Kltq60",
+      "id" : "3333",
+      "adminUsername" : "luca",
+      "eventslist" : [
+        {
+          "eventName" : "Gin degustation",
+          "id" : "aaaa",
+          "time" : "Fr 2.7.2021",
+          "location" : "Blabla street 42, Blablacity"
+        },
+        {
+          "eventName" : "Whiskey degustation",
+          "id" : "bbbb",
+          "time" : "Fr 9.7.2021",
+          "location" : "Huhu street 10, Huhucity"
+        },
+        {
+          "eventName" : "Beer degustation",
+          "id" : "cccc",
+          "time" : "Fr 16.7.2021",
+          "location" : "Hehe street 42, Hehecity"
+        }
+      ]
     }
   ]
 }

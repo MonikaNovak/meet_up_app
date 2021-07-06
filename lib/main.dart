@@ -4,6 +4,7 @@ import 'package:logger/logger.dart';
 import 'package:meet_up_vor_2/api/models/User.dart';
 import 'package:meet_up_vor_2/components/image_capture_widget.dart';
 import 'package:meet_up_vor_2/screens/page_home.dart';
+import 'package:meet_up_vor_2/screens/screen_add_friend.dart';
 import 'package:meet_up_vor_2/screens/screen_detail_event.dart';
 import 'package:meet_up_vor_2/screens/screen_detail_friend_profile.dart';
 import 'package:meet_up_vor_2/screens/screen_detail_group.dart';
@@ -51,7 +52,7 @@ class MyApp extends StatelessWidget {
       )),
       initialRoute: 'welcome_screen',
       routes: {
-        'welcome_screen': (context) => WelcomeScreen(),
+        'welcome_screen': (context) => LoginScreen(),
         'register_screen': (context) => RegisterScreen(),
         'main_screen': (context) => MainScreen(),
         'user_profile': (context) => UserProfileScreen(),
@@ -61,6 +62,7 @@ class MyApp extends StatelessWidget {
         'group_members': (context) => GroupMembers(),
         'friend_profile': (context) => FriendProfileScreen(),
         'image_capture': (context) => ImageCapture(),
+        'add_friend': (context) => AddFriend(),
       },
     );
   }

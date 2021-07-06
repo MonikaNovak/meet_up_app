@@ -42,13 +42,17 @@ class _FriendProfileScreenState extends State<FriendProfileScreen> {
                     backgroundImage: new NetworkImage(arguments[0]),
                   ),
                   SizedBox(width: 20.0),
-                  Flexible(
-                    child: Text(
-                      arguments[1],
-                      style: TextStyle(
-                          fontWeight: FontWeight.bold, fontSize: 24.0),
-                      overflow: TextOverflow.fade,
-                    ),
+                  Column(
+                    children: <Widget>[
+                      Text(
+                        arguments[2],
+                        style: TextStyle(
+                            fontWeight: FontWeight.bold, fontSize: 24.0),
+                      ),
+                      Text(
+                        arguments[1],
+                      )
+                    ],
                   ),
                 ],
               ),
@@ -63,7 +67,7 @@ class _FriendProfileScreenState extends State<FriendProfileScreen> {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: <Widget>[
                   Text('email address'),
-                  Text(arguments[2]),
+                  Text(arguments[3]),
                 ],
               ),
             ),
@@ -77,45 +81,13 @@ class _FriendProfileScreenState extends State<FriendProfileScreen> {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: <Widget>[
                   Text('status'),
-                  Text(arguments[3]),
+                  Text(arguments[4]),
                 ],
               ),
             ),
             SizedBox(
               height: 20.0,
             ),
-            /*Row(
-              mainAxisAlignment: MainAxisAlignment.end,
-              children: <Widget>[
-                TextButton(
-                  style: ButtonStyle(
-                    backgroundColor:
-                        MaterialStateProperty.all<Color>(Colors.deepPurple),
-                  ),
-                  onPressed: () {},
-                  child: Text(
-                    "Edit",
-                    style: TextStyle(color: Colors.white),
-                  ),
-                ),
-                SizedBox(
-                  width: 10.0,
-                ),
-                TextButton(
-                  style: ButtonStyle(
-                    backgroundColor:
-                        MaterialStateProperty.all<Color>(Colors.deepPurple),
-                  ),
-                  onPressed: () {
-                    Navigator.pushReplacementNamed(context, 'welcome_screen');
-                  },
-                  child: Text(
-                    "Log out",
-                    style: TextStyle(color: Colors.white),
-                  ),
-                ),
-              ],
-            ),*/
           ],
         ),
       ),

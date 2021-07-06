@@ -14,13 +14,13 @@ import '../constants.dart';
 import 'package:meet_up_vor_2/api/api_client.dart';
 
 class UserProfileScreen extends StatefulWidget {
+  late final Token token;
+  late final User userFinal;
   @override
   _UserProfileScreenState createState() => _UserProfileScreenState();
 }
 
 class _UserProfileScreenState extends State<UserProfileScreen> {
-  late final token;
-  late final userFinal;
   Future<User> _getUser(Token token) async {
     var userFuture;
     if (token.token == '123456789') {
@@ -30,15 +30,36 @@ class _UserProfileScreenState extends State<UserProfileScreen> {
   }
 
   void _defineUser() async {
-    userFinal = await _getUser(token);
+    widget.userFinal = await _getUser(widget.token);
   }
+
+  /*@override
+  void initState() {
+    super.initState();
+    Future.delayed(Duration.zero, () {
+      setState(() {
+
+        _defineUser();
+      });
+      print('feedback print token in init state: ' + token.token);
+
+      print('feedback print user name in init state: ' + userFinal.name);
+    });
+  }*/
+
+  // define _userFinal from future user
 
   @override
   Widget build(BuildContext context) {
-    var token = ModalRoute.of(context)!.settings.arguments as Token;
+    widget.token = ModalRoute.of(context)!.settings.arguments as Token;
     _defineUser();
+    // var userFinal = _getUser(token) as User;
+    // print('in build user final name ' + userFinal.name);
+    // final Future<User> _userFinal = _getUser(token);
     return FutureBuilder<User>(
-        future: _getUser(token),
+        future: _getUser(widget.token),
+        // future: userFinal,
+        // future: _userFinal,
         builder: (context, snapshot) {
           switch (snapshot.connectionState) {
             case ConnectionState.waiting:
@@ -47,7 +68,9 @@ class _UserProfileScreenState extends State<UserProfileScreen> {
               if (snapshot.hasError)
                 return Text('Error: ${snapshot.error}');
               else
-                return _buildWidget();
+                print('feedback - build user profile detail, user: ' +
+                    widget.userFinal.name);
+              return _buildWidget();
           }
         });
   }
@@ -79,7 +102,8 @@ class _UserProfileScreenState extends State<UserProfileScreen> {
                   children: <Widget>[
                     CircleAvatar(
                       radius: 50.0,
-                      backgroundImage: new NetworkImage(userFinal.profilImage),
+                      backgroundImage:
+                          new NetworkImage(widget.userFinal.profilImage),
                       child: Align(
                         alignment: Alignment.bottomRight,
                         child: CircleAvatar(
@@ -88,7 +112,7 @@ class _UserProfileScreenState extends State<UserProfileScreen> {
                           child: IconButton(
                             onPressed: () {
                               Navigator.pushNamed(context, 'image_capture',
-                                  arguments: userFinal);
+                                  arguments: widget.userFinal);
                             },
                             iconSize: 12.0,
                             icon: Icon(
@@ -105,7 +129,7 @@ class _UserProfileScreenState extends State<UserProfileScreen> {
                       children: <Widget>[
                         Text(
                           /*'test',*/
-                          userFinal.displayName,
+                          widget.userFinal.displayName,
                           style: TextStyle(
                               fontWeight: FontWeight.bold, fontSize: 24.0),
                         ),
@@ -127,7 +151,7 @@ class _UserProfileScreenState extends State<UserProfileScreen> {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: <Widget>[
                     Text('email address'),
-                    Text(userFinal.email),
+                    Text(widget.userFinal.email),
                   ],
                 ),
               ),
@@ -141,7 +165,7 @@ class _UserProfileScreenState extends State<UserProfileScreen> {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: <Widget>[
                     Text('status'),
-                    Text(userFinal.statusMessage),
+                    Text(widget.userFinal.statusMessage),
                   ],
                 ),
               ),

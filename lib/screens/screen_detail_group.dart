@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
+import 'package:meet_up_vor_2/api/models/Token.dart';
 import 'package:meet_up_vor_2/api/models/User.dart';
 
 class GroupDetail extends StatefulWidget {
-/*  late final User userFinal;
-
-  GroupDetail(this.userFinal);*/
+  late final Token token;
+  late final User userFinal;
 
   @override
   _GroupDetailState createState() => _GroupDetailState();
@@ -15,7 +15,7 @@ class _GroupDetailState extends State<GroupDetail> {
 
   @override
   Widget build(BuildContext context) {
-    final userFinal = ModalRoute.of(context)!.settings.arguments as User;
+    widget.token = ModalRoute.of(context)!.settings.arguments as Token;
     return Scaffold(
 /*      appBar: MyAppBar(),*/
       appBar: AppBar(
