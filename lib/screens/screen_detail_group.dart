@@ -1,10 +1,21 @@
 import 'package:flutter/material.dart';
+import 'package:meet_up_vor_2/api/models/EventMeeting.dart';
+import 'package:meet_up_vor_2/api/models/Group.dart';
 import 'package:meet_up_vor_2/api/models/Token.dart';
 import 'package:meet_up_vor_2/api/models/User.dart';
 
+/// from database:
+/// group:
+/// info - name
+/// list of members
+/// list of events
+/// action leave group (remove group from group list)
+/// later group messenger
+
 class GroupDetail extends StatefulWidget {
-  late final Token token;
-  late final User userFinal;
+  // late final Token token;
+  late final User userPassed;
+  late final Group group;
 
   @override
   _GroupDetailState createState() => _GroupDetailState();
@@ -12,13 +23,23 @@ class GroupDetail extends StatefulWidget {
 
 class _GroupDetailState extends State<GroupDetail> {
   late String messageText;
+  late List<EventMeeting> _listOfEvents;
+  final _biggerFont = const TextStyle(fontSize: 18.0);
 
   @override
   Widget build(BuildContext context) {
-    widget.token = ModalRoute.of(context)!.settings.arguments as Token;
+    final arguments = ModalRoute.of(context)!.settings.arguments as List;
+    widget.group = arguments[0] as Group;
+    widget.userPassed = arguments[1] as User;
+    _buildEventList();
     return Scaffold(
-/*      appBar: MyAppBar(),*/
       appBar: AppBar(
+        leading: BackButton(
+          onPressed: () {
+            Navigator.pop(context);
+          },
+        ),
+        backgroundColor: Colors.deepPurple,
         title: Text(
           'Group details',
         ),
@@ -36,12 +57,12 @@ class _GroupDetailState extends State<GroupDetail> {
                   CircleAvatar(
                     radius: 30.0,
                     /*backgroundImage: AssetImage(kUserProfilePicAddress),*/
-                    backgroundImage: new NetworkImage(
-                        'https://www.jolie.de/sites/default/files/styles/facebook/public/images/2017/07/14/partypeople.jpg?itok=H8Kltq60'),
+                    backgroundImage:
+                        new NetworkImage(widget.group.groupImageUrl),
                   ),
                   SizedBox(width: 20.0),
                   Text(
-                    'Crazy people',
+                    widget.group.groupName,
                     style:
                         TextStyle(fontWeight: FontWeight.bold, fontSize: 24.0),
                   ),
@@ -56,18 +77,19 @@ class _GroupDetailState extends State<GroupDetail> {
               children: <Widget>[
                 TextButton(
                   child: Text(
-                    'show members',
+                    'Show members',
                   ),
                   onPressed: () {
-                    Navigator.pushNamed(context, 'group_members');
+                    Navigator.pushNamed(context, 'group_members',
+                        arguments: widget.userPassed);
                   },
                 ),
                 TextButton(
                   child: Text(
-                    'leave group',
+                    'Leave group',
                   ),
                   onPressed: () {
-                    Navigator.pushNamed(context, 'group_members');
+                    _showAlertDialog(context);
                   },
                 ),
               ],
@@ -75,15 +97,11 @@ class _GroupDetailState extends State<GroupDetail> {
             Expanded(
               child: ListView.separated(
                 separatorBuilder: (context, index) => Divider(),
-                itemCount: 10,
-                padding: EdgeInsets.all(10.0),
-                itemBuilder: (BuildContext context, int index) {
-                  return ListTile(
-                    dense: true,
-                    leading: Icon(Icons.account_circle),
-                    title: Text('Event $index'),
-                    subtitle: Text("Fr 17:00, Strandbad"),
-                  );
+                shrinkWrap: true,
+                padding: const EdgeInsets.all(0.0),
+                itemCount: _listOfEvents.length,
+                itemBuilder: (context, i) {
+                  return _buildRow(_listOfEvents[i]);
                 },
               ),
             ),
@@ -91,6 +109,7 @@ class _GroupDetailState extends State<GroupDetail> {
               height: 10.0,
             ),
             Expanded(
+              //TODO build up chat messenger
               flex: 2,
               child: Container(
                 color: Colors.grey.shade300,
@@ -109,7 +128,6 @@ class _GroupDetailState extends State<GroupDetail> {
                       widget.userFinal.userName,
                       messageText
                     ];*/
-                        //TODO save message to the 'database'
                       },
                       child: Text('Send'),
                     )
@@ -120,6 +138,67 @@ class _GroupDetailState extends State<GroupDetail> {
           ],
         ),
       ),
+    );
+  }
+
+  Widget _buildRow(EventMeeting event) {
+    return new ListTile(
+      leading: new CircleAvatar(
+          backgroundColor: Colors.grey, child: Icon(Icons.location_on)),
+      title: new Text(
+        event.eventName,
+        style: _biggerFont,
+      ),
+      subtitle:
+          new Text('Time: ' + event.time + '\nLocation: ' + 'event.location'),
+      onTap: () {
+        Navigator.pushNamed(context, 'event_detail',
+            arguments: [event, widget.group, widget.userPassed]);
+      },
+    );
+  }
+
+  _buildEventList() async {
+    List<EventMeeting> listOfEvents = new List.empty(growable: true);
+    try {
+      listOfEvents = widget.group.events;
+    } catch (exception) {
+      print(exception.toString());
+    }
+
+    print('feedback - group detail - fetch list of events');
+    _listOfEvents = listOfEvents;
+  }
+
+  _showAlertDialog(BuildContext context) {
+    Widget cancelButton = TextButton(
+      child: Text("Cancel"),
+      onPressed: () {
+        Navigator.of(context).pop();
+      },
+    );
+    Widget confirmButton = TextButton(
+      child: Text("Leave group"),
+      onPressed: () {
+        // TODO leave group function
+      },
+    );
+
+    AlertDialog alert = AlertDialog(
+      title: Text("Are you sure you want to leave this group?"),
+      content: Text(
+          "Only the admin of the group can add you back to the members list"),
+      actions: [
+        cancelButton,
+        confirmButton,
+      ],
+    );
+
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return alert;
+      },
     );
   }
 }

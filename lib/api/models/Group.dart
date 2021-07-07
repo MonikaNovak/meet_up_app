@@ -1,4 +1,4 @@
-import 'Event.dart';
+import 'EventMeeting.dart';
 import 'Friend.dart';
 
 class Group {
@@ -7,7 +7,7 @@ class Group {
   final String id;
   final String adminUsername;
 /*  final List<Friend> members;*/
-  final List<Event> events;
+  final List<EventMeeting> events;
 
   const Group(
       this.adminUsername,
@@ -26,6 +26,6 @@ class Group {
             .map((e) => Friend.fromJson(e))
             .toList(),*/
         events = (json['eventslist'] as List<dynamic>)
-            .map((e) => Event.fromJson(e))
+            .map((e) => EventMeeting.fromJson(e))
             .toList();
 }

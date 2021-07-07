@@ -1,24 +1,27 @@
 import 'Friend.dart';
 
-class Event {
+class EventMeeting {
   final String eventName;
   final String id;
   final String time;
-  final String location;
+  final double lat;
+  final double long;
 /*  final List<Friend> members;*/
 
-  const Event(
+  const EventMeeting(
       this.id,
 /*      this.members, */
-      this.location,
+      this.lat,
+      this.long,
       this.eventName,
       this.time);
 
-  Event.fromJson(Map<String, dynamic> json)
+  EventMeeting.fromJson(Map<String, dynamic> json)
       : eventName = json['eventName'],
         time = json['time'],
         id = json['id'],
-        location = json['location']
+        lat = json['lat'],
+        long = json['long']
 /*  ,
         members = (json['friendslist'] as List<dynamic>)
             .map((e) => Friend.fromJson(e))

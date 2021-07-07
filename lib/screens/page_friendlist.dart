@@ -12,6 +12,9 @@ import 'package:meet_up_vor_2/api/api_client.dart';
 import '../constants.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 
+/// from database:
+/// list of friends
+
 class FriendListPage extends StatefulWidget {
   late final Token token;
   FriendListPage(this.token);
@@ -158,16 +161,13 @@ class _FriendListPageState extends State<FriendListPage> {
       ),
       subtitle: new Text(friend.statusMessage),
       onTap: () {
-        setState(() {
-          print('feedback - friendlist - set state - on tap of friend row');
-          Navigator.pushNamed(context, 'friend_profile', arguments: [
-            friend.profileImageUrl,
-            friend.name,
-            friend.displayName,
-            friend.email,
-            friend.statusMessage
-          ]);
-        });
+        Navigator.pushNamed(context, 'friend_profile', arguments: [
+          friend.profileImageUrl,
+          friend.name,
+          friend.displayName,
+          friend.email,
+          friend.statusMessage
+        ]);
       },
     );
   }

@@ -1,5 +1,6 @@
 import 'Friend.dart';
 import 'Group.dart';
+import 'EventMeeting.dart';
 
 class User {
   final String name;
@@ -11,9 +12,19 @@ class User {
   final messages;
   final List<Friend> friends;
   final List<Group> groups;
+  final List<EventMeeting> events;
 
-  User(this.name, this.displayName, this.email, this.profilImage, this.status,
-      this.statusMessage, this.messages, this.friends, this.groups);
+  User(
+      this.name,
+      this.displayName,
+      this.email,
+      this.profilImage,
+      this.status,
+      this.statusMessage,
+      this.messages,
+      this.friends,
+      this.groups,
+      this.events);
 
   User.fromJson(Map<String, dynamic> json)
       : name = json['name'],
@@ -28,5 +39,8 @@ class User {
             .toList(),
         groups = (json['groupslist'] as List<dynamic>)
             .map((e) => Group.fromJson(e))
+            .toList(),
+        events = (json['eventslist'] as List<dynamic>)
+            .map((e) => EventMeeting.fromJson(e))
             .toList();
 }

@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:meet_up_vor_2/api/models/Friend.dart';
 import 'package:meet_up_vor_2/api/models/Token.dart';
@@ -5,8 +7,9 @@ import 'package:meet_up_vor_2/api/models/User.dart';
 import 'package:meet_up_vor_2/api/api_client.dart';
 import 'package:meet_up_vor_2/api/providers/LoginProvider.dart';
 
-// TODO replace with another future builder waiting for searchedFriend ???
-// TODO study streams !!!
+/// from database:
+/// search through users by username or email address
+/// add user to friend list (later send friend request)
 
 class AddFriend extends StatefulWidget {
   late final Token token;
@@ -36,6 +39,9 @@ class _AddFriendState extends State<AddFriend> {
   bool isFriendFound = false;
   late Friend searchedFriend;
   final _biggerFont = const TextStyle(fontSize: 18.0);
+
+  final StreamController<Friend> _streamControllerSearchedFriend =
+      StreamController();
 
   @override
   Widget build(BuildContext context) {
@@ -135,44 +141,66 @@ class _AddFriendState extends State<AddFriend> {
                     _fetchSearchedFriend();
                   },
                 ),
-                Container(
-                  child: isFriendFound
-                      ? Column(
-                          children: [
-                            ListTile(
-                              leading: CircleAvatar(
-                                backgroundImage: NetworkImage(
-                                    searchedFriend.profileImageUrl),
+                StreamBuilder<Friend>(
+                    stream: _streamControllerSearchedFriend.stream,
+                    builder: (context, snapshot) {
+                      if (isFriendFound)
+                        return Container(
+                          child: Column(
+                            children: [
+                              ListTile(
+                                leading: CircleAvatar(
+                                  backgroundImage: NetworkImage(
+                                      searchedFriend.profileImageUrl),
+                                ),
+                                title: new Text(
+                                  searchedFriend.displayName +
+                                      ' (' +
+                                      searchedFriend.name +
+                                      ')',
+                                  style: _biggerFont,
+                                ),
+                                subtitle:
+                                    new Text(searchedFriend.statusMessage),
                               ),
-                              title: new Text(
-                                searchedFriend.displayName +
-                                    ' (' +
-                                    searchedFriend.name +
-                                    ')',
-                                style: _biggerFont,
-                              ),
-                              subtitle: new Text(searchedFriend.statusMessage),
-                            ),
-                            TextButton(
-                                onPressed: () {
-                                  // TODO add user to friend list
-                                  final message = searchedFriend.name +
-                                      ' was added to your friendlist';
-                                  final snackBar = SnackBar(
-                                    content: Text(
-                                      message,
-                                      style: TextStyle(fontSize: 15),
-                                    ),
-                                    backgroundColor: Colors.green.shade300,
-                                  );
-                                  ScaffoldMessenger.of(context)
-                                      .showSnackBar(snackBar);
-                                },
-                                child: Text('Add to friend list'))
-                          ],
-                        )
-                      : Container(),
-                ),
+                              TextButton(
+                                  onPressed: () {
+                                    if (isFriendFound) {
+                                      // TODO add user to friend list
+                                      final message =
+                                          searchedFriend.displayName +
+                                              ' (' +
+                                              searchedFriend.name +
+                                              ') was added to your friendlist';
+                                      final snackBar = SnackBar(
+                                        content: Text(
+                                          message,
+                                          style: TextStyle(fontSize: 15),
+                                        ),
+                                        backgroundColor: Colors.green.shade300,
+                                      );
+                                      ScaffoldMessenger.of(context)
+                                          .showSnackBar(snackBar);
+                                    }
+                                  },
+                                  child: Text('Add to friend list'))
+                            ],
+                          ),
+                        );
+                      else
+                        return Container(
+                          child: (usernameToSearch.length == 0 &&
+                                  emailToSearch.length == 0)
+                              ? Text('')
+                              : Text(
+                                  'no user found',
+                                  style: TextStyle(
+                                    fontStyle: FontStyle.italic,
+                                    color: Colors.red,
+                                  ),
+                                ),
+                        );
+                    }),
               ],
             ),
           ),
@@ -189,6 +217,7 @@ class _AddFriendState extends State<AddFriend> {
     } catch (exception) {
       print(exception.toString());
     }
+    isFriendFound = false;
 
     listOfUsers.forEach((element) {
       if (isFriendFound) {
@@ -196,12 +225,16 @@ class _AddFriendState extends State<AddFriend> {
       }
       print('feedback - user from list username: ' + element.name);
       if (element.name == usernameToSearch || element.email == emailToSearch) {
-        //setState(() {
         searchedFriend = element;
         isFriendFound = true;
         print('feedback -  isFriendFound:');
         print(isFriendFound);
-        //});
+        _streamControllerSearchedFriend.sink.add(searchedFriend);
+      } else {
+        isFriendFound = false;
+        searchedFriend = new Friend(
+            'name', 'email', 'profileImageUrl', 'statusMessage', 'displayName');
+        _streamControllerSearchedFriend.sink.add(searchedFriend);
       }
     });
   }

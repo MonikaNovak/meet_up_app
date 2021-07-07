@@ -13,6 +13,13 @@ import 'package:image_picker/image_picker.dart';
 import '../constants.dart';
 import 'package:meet_up_vor_2/api/api_client.dart';
 
+/// from database:
+/// user info
+/// action change profile pic - update somewhere to save as URL
+/// action change display name, status
+/// action log out
+/// action delete profile
+
 class UserProfileScreen extends StatefulWidget {
   late final Token token;
   late final User userFinal;

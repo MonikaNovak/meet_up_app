@@ -3,7 +3,7 @@
   "name" : "monika.n",
   "displayName" : "moni",
   "email" : "myemail@gmal.com",
-  "profilImage" : "https://i.ibb.co/KXk487n/cof.jpg",
+  "profilImage" : "https://i.ibb.co/dGRDWsY/cof.jpg",
   "status" : 1,
   "statusMessage" : "So call me maybe!",
   "friendslist" : [
@@ -82,19 +82,22 @@
           "eventName" : "Gin degustation",
           "id" : "aaaa",
           "time" : "Fr 2.7.2021",
-          "location" : "Blabla street 42, Blablacity"
+          "lat" : 47.23962176969944,
+          "long" : 9.597157658181816
         },
         {
           "eventName" : "Whiskey degustation",
           "id" : "bbbb",
           "time" : "Fr 9.7.2021",
-          "location" : "Huhu street 10, Huhucity"
+          "lat" : 47.23962176969944,
+          "long" : 9.597157658181816
         },
         {
           "eventName" : "Beer degustation",
           "id" : "cccc",
           "time" : "Fr 16.7.2021",
-          "location" : "Hehe street 42, Hehecity"
+          "lat" : 47.23962176969944,
+          "long" : 9.597157658181816
         }
       ]
     },
@@ -108,19 +111,22 @@
           "eventName" : "Gin degustation",
           "id" : "aaaa",
           "time" : "Fr 2.7.2021",
-          "location" : "Blabla street 42, Blablacity"
+          "lat" : 47.23962176969944,
+          "long" : 9.597157658181816
         },
         {
           "eventName" : "Whiskey degustation",
           "id" : "bbbb",
           "time" : "Fr 9.7.2021",
-          "location" : "Huhu street 10, Huhucity"
+          "lat" : 47.23962176969944,
+          "long" : 9.597157658181816
         },
         {
           "eventName" : "Beer degustation",
           "id" : "cccc",
           "time" : "Fr 16.7.2021",
-          "location" : "Hehe street 42, Hehecity"
+          "lat" : 47.23962176969944,
+          "long" : 9.597157658181816
         }
       ]
     },
@@ -134,21 +140,47 @@
           "eventName" : "Gin degustation",
           "id" : "aaaa",
           "time" : "Fr 2.7.2021",
-          "location" : "Blabla street 42, Blablacity"
+          "lat" : 47.23962176969944,
+          "long" : 9.597157658181816
         },
         {
           "eventName" : "Whiskey degustation",
           "id" : "bbbb",
           "time" : "Fr 9.7.2021",
-          "location" : "Huhu street 10, Huhucity"
+          "lat" : 47.23962176969944,
+          "long" : 9.597157658181816
         },
         {
           "eventName" : "Beer degustation",
           "id" : "cccc",
           "time" : "Fr 16.7.2021",
-          "location" : "Hehe street 42, Hehecity"
+          "lat" : 47.23962176969944,
+          "long" : 9.597157658181816
         }
       ]
+    }
+  ],
+  "eventslist" : [
+    {
+      "eventName" : "Gin degustation",
+      "id" : "aaaa",
+      "time" : "Fr 2.7.2021",
+      "lat" : 47.23962176969944,
+      "long" : 9.597157658181816
+    },
+    {
+      "eventName" : "Whiskey degustation",
+      "id" : "bbbb",
+      "time" : "Fr 9.7.2021",
+      "lat" : 47.23962176969944,
+      "long" : 9.597157658181816
+    },
+    {
+      "eventName" : "Beer degustation",
+      "id" : "cccc",
+      "time" : "Fr 16.7.2021",
+      "lat" : 47.23962176969944,
+      "long" : 9.597157658181816
     }
   ]
 }

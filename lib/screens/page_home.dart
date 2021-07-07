@@ -1,13 +1,15 @@
 import 'package:flutter/material.dart';
+import 'package:meet_up_vor_2/api/models/EventMeeting.dart';
 import 'package:meet_up_vor_2/api/models/Token.dart';
 import 'package:meet_up_vor_2/api/models/User.dart';
 import 'package:meet_up_vor_2/api/providers/LoginProvider.dart';
 import 'package:meet_up_vor_2/constants.dart';
-import 'package:meet_up_vor_2/screens/screen_main.dart';
 import 'package:meet_up_vor_2/api/api_client.dart';
 
-// TODO why console prints feedback already at login?
-// TODO upcoming events
+/// from database:
+/// token
+/// list of events the user joined
+/// new messages (later)
 
 class HomePage extends StatefulWidget {
   late final Token token;
@@ -31,6 +33,9 @@ class _HomePageState extends State<HomePage> {
     widget.userFinal = await _getUser(widget.token);
   }
 
+  late List<EventMeeting> _listOfEvents;
+  final _biggerFont = const TextStyle(fontSize: 18.0);
+
 /*  @override
   void initState() {
     super.initState();
@@ -51,8 +56,9 @@ class _HomePageState extends State<HomePage> {
               if (snapshot.hasError)
                 return Text('Error: ${snapshot.error}');
               else
-                print('feedback - build homepage, user: ' +
-                    widget.userFinal.name);
+                _buildEventList();
+              print(
+                  'feedback - build homepage, user: ' + widget.userFinal.name);
               return _buildWidget();
           }
         });
@@ -86,7 +92,7 @@ class _HomePageState extends State<HomePage> {
               ),
             ),
             SizedBox(
-              height: 40.0,
+              height: 20.0,
             ),
             Padding(
               padding: EdgeInsets.all(10.0),
@@ -97,20 +103,25 @@ class _HomePageState extends State<HomePage> {
             Expanded(
               child: ListView.separated(
                 separatorBuilder: (context, index) => Divider(),
-                itemCount: 4,
-                itemBuilder: (BuildContext context, int index) {
-                  return ListTile(
-                    title: Text(
-                      'Afternoon swim at strandbad $index',
-                    ),
-                    subtitle: Text('time: Thursday 17:00'),
-                    trailing: Icon(
-                      Icons.location_on,
-                    ),
-                    tileColor: Colors.grey.shade300,
-                  );
+                shrinkWrap: true,
+                padding: const EdgeInsets.all(0.0),
+                itemCount: _listOfEvents.length,
+                itemBuilder: (context, i) {
+                  return _buildRow(_listOfEvents[i]);
                 },
               ),
+            ),
+            SizedBox(
+              height: 20.0,
+            ),
+            Padding(
+              padding: EdgeInsets.all(10.0),
+              child: Text(
+                'New messages:',
+              ),
+            ),
+            Container(
+              child: Text('Messages TODO'),
             ),
           ],
         ),
@@ -118,64 +129,34 @@ class _HomePageState extends State<HomePage> {
     );
   }
 
-  /*@override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      body: SafeArea(
-        minimum: EdgeInsets.all(20.0),
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.start,
-          children: <Widget>[
-            Container(
-              padding: EdgeInsets.all(10.0),
-              color: Colors.grey.shade400,
-              child: Row(
-                children: <Widget>[
-                  CircleAvatar(
-                    radius: 50.0,
-                    */ /*backgroundImage: AssetImage(kUserProfilePicAddress),*/ /*
-                    */ /*ackgroundImage: new NetworkImage(userFinal.profilImage),*/ /*
-                  ),
-                  SizedBox(width: 20.0),
-                  Text(
-                    */ /*userFinal.displayName,*/ /*
-                    'text',
-                    style:
-                        TextStyle(fontWeight: FontWeight.bold, fontSize: 24.0),
-                  ),
-                ],
-              ),
-            ),
-            SizedBox(
-              height: 40.0,
-            ),
-            Padding(
-              padding: EdgeInsets.all(10.0),
-              child: Text(
-                'Upcoming events:',
-              ),
-            ),
-            Expanded(
-              child: ListView.separated(
-                separatorBuilder: (context, index) => Divider(),
-                itemCount: 4,
-                itemBuilder: (BuildContext context, int index) {
-                  return ListTile(
-                    title: Text(
-                      'Afternoon swim at strandbad $index',
-                    ),
-                    subtitle: Text('time: Thursday 17:00'),
-                    trailing: Icon(
-                      Icons.location_on,
-                    ),
-                    tileColor: Colors.grey.shade300,
-                  );
-                },
-              ),
-            ),
-          ],
-        ),
+  Widget _buildRow(EventMeeting event) {
+    return new ListTile(
+      leading: new CircleAvatar(
+          backgroundColor: Colors.grey, child: Icon(Icons.location_on)),
+      title: new Text(
+        event.eventName,
+        style: _biggerFont,
       ),
+      subtitle:
+          new Text('Time: ' + event.time + '\nLocation: ' + 'event.location'),
+      onTap: () {
+        // TODO pass the correct group or link group
+        Navigator.pushNamed(context, 'event_detail',
+            arguments: [event, widget.userFinal.groups[0], widget.userFinal]);
+      },
     );
-  }*/
+  }
+
+  _buildEventList() async {
+    // TODO sort events by date
+    List<EventMeeting> listOfEvents = new List.empty(growable: true);
+    try {
+      listOfEvents = widget.userFinal.events;
+    } catch (exception) {
+      print(exception.toString());
+    }
+
+    print('feedback - group detail - fetch list of events');
+    _listOfEvents = listOfEvents;
+  }
 }
