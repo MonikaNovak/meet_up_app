@@ -1,29 +1,24 @@
-import 'dart:io';
-import 'package:meet_up_vor_2/api/api_client.dart';
+import 'package:email_validator/email_validator.dart';
 import 'package:flutter/material.dart';
 import 'package:meet_up_vor_2/api/models/Token.dart';
-import 'package:meet_up_vor_2/api/providers/LoginProvider.dart';
-import 'package:meet_up_vor_2/constants.dart';
+import 'package:meet_up_vor_2/api/models/User.dart';
 
-import 'package:email_validator/email_validator.dart';
+import '../constants.dart';
 
-class RegisterScreen extends StatefulWidget {
+class EditProfile extends StatefulWidget {
+  late final Token token;
+  late final User userFinal;
+
   @override
-  _RegisterScreenState createState() => _RegisterScreenState();
+  _EditProfileState createState() => _EditProfileState();
 }
 
-class _RegisterScreenState extends State<RegisterScreen> {
-  //
-  // USE LOCAL OR REST API: 0 for local, 1 for api
-  int useApi = 0;
-  //
-  //
-
-  String userName = '';
-  String userPassword = '';
-  String userEmail = '';
-  String userPasswordToCheck = '';
-  late Token token;
+class _EditProfileState extends State<EditProfile> {
+  // late String userName;
+  late String displayName;
+  late String emailAddress;
+  late String statusMessage;
+  late String password;
 
   final GlobalKey<FormState> _formKey1 = GlobalKey<FormState>();
   final GlobalKey<FormState> _formKey2 = GlobalKey<FormState>();
@@ -31,36 +26,35 @@ class _RegisterScreenState extends State<RegisterScreen> {
   final GlobalKey<FormState> _formKey4 = GlobalKey<FormState>();
   final GlobalKey<FormState> _formKeySubmit = GlobalKey<FormState>();
 
-  // login to local json get token placeholder
-  Future<Token> _getTokenPlaceholder() async {
-    // var token = await LoginProvider(Client().init()).getTokenLocalApi(); // not using anymore, token just harcoded for easier testing
-    var token = new Token(token: '123456789');
-    return token;
-  }
-
-  bool _validatePasswordStructure(String value) {
-    /*String pattern =
-        r'^(?=.*?[A-Z])(?=.*?[a-z])(?=.*?[0-9])(?=.*?[!@#\$&*~]).{8,}$';*/ // original regex also for special characters as reference
-    String pattern = r'^(?=.*?[A-Z])(?=.*?[a-z])(?=.*?[0-9]).{8,}$';
-    RegExp regExp = new RegExp(pattern);
-    return regExp.hasMatch(value);
-  }
-
-  void _register() async {
-    var httpClient = new HttpClient();
-    var url = 'http://172.21.250.154:5000/api/Account/register';
-    var request = await httpClient.getUrl(Uri.parse(url));
-  }
-
   @override
   Widget build(BuildContext context) {
+    final arguments = ModalRoute.of(context)!.settings.arguments as List;
+    widget.token = arguments[0] as Token;
+    widget.userFinal = arguments[1] as User;
+    // userName = widget.userFinal.name;
+    displayName = widget.userFinal.displayName;
+    emailAddress = widget.userFinal.email;
+    statusMessage = widget.userFinal.statusMessage;
+    String userPasswordToCheck = '';
+    String newPassword = '';
+
+    bool _validatePasswordStructure(String value) {
+      String pattern = r'^(?=.*?[A-Z])(?=.*?[a-z])(?=.*?[0-9]).{8,}$';
+      RegExp regExp = new RegExp(pattern);
+      return regExp.hasMatch(value);
+    }
+
     return Scaffold(
       appBar: AppBar(
-        backgroundColor: Colors.white,
-        iconTheme: IconThemeData(color: Colors.deepPurple),
+        leading: BackButton(
+          onPressed: () {
+            Navigator.pop(context);
+          },
+        ),
+        backgroundColor: Colors.deepPurple,
         title: Text(
-          'Register account',
-          style: TextStyle(color: Colors.deepPurple),
+          'Update profile data',
+          style: TextStyle(fontSize: 15.0),
         ),
       ),
       body: Padding(
@@ -69,36 +63,34 @@ class _RegisterScreenState extends State<RegisterScreen> {
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
             children: <Widget>[
-              /*Container(
-                child: Image.asset('images/logo_meetup.png'),
-                height: 80.0,
-              ),
-              SizedBox(
-                height: 20,
-              ),*/
               Form(
-                key: _formKey1,
+                // key: _formKey1,
                 autovalidateMode: AutovalidateMode.onUserInteraction,
                 child: TextFormField(
-                  initialValue: 'theUser', // for testing
-                  decoration: InputDecoration(
-                    isDense: true,
-                    labelText: 'Username',
-                    border: OutlineInputBorder(),
-                  ),
-                  validator: (value) {
+                    initialValue: displayName, // for testing
+                    decoration: InputDecoration(
+                      isDense: true,
+                      labelText: 'Display name:',
+                      border: OutlineInputBorder(),
+                    ),
+                    /*validator: (value) {
                     if (value!.length < 4) {
                       return 'Enter at least 4 characters';
                     } else {
                       return null;
                     }
-                  },
-                  maxLength: 30,
-                  onSaved: (value) => setState(() => userName = value!),
-                ),
+                  },*/
+                    maxLength: 20,
+                    onSaved: (value) => displayName = value!),
+              ),
+              Text(
+                'Display name will be shown throughout the app, replacing user name.',
+                style: TextStyle(
+                    fontStyle: FontStyle.italic,
+                    color: Colors.deepPurple.shade300),
               ),
               SizedBox(
-                height: 20,
+                height: 10,
               ),
               /*TextField(
                     decoration: kTextFieldUserEmailTextDecoration,
@@ -107,10 +99,10 @@ class _RegisterScreenState extends State<RegisterScreen> {
                     },
                   ),*/
               Form(
-                key: _formKey2,
+                key: _formKey1,
                 autovalidateMode: AutovalidateMode.onUserInteraction,
                 child: TextFormField(
-                  initialValue: 'email@email.com', // for testing
+                  initialValue: emailAddress, // for testing
                   decoration: const InputDecoration(
                     isDense: true,
                     /*icon: Icon(Icons.email),*/
@@ -119,9 +111,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
                     border: OutlineInputBorder(),
                   ),
                   validator: (String? value) {
-                    if (value!.isEmpty) {
-                      return 'Email address is required';
-                    } else if (!EmailValidator.validate(value)) {
+                    if (!EmailValidator.validate(value!)) {
                       return 'Please enter valid email';
                     } else {
                       return null;
@@ -129,8 +119,27 @@ class _RegisterScreenState extends State<RegisterScreen> {
                   },
                   keyboardType: TextInputType.emailAddress,
                   onSaved: (String? value) {
-                    userEmail = value!;
-                    print(userEmail);
+                    emailAddress = value!;
+                  },
+                ),
+              ),
+              SizedBox(
+                height: 20,
+              ),
+              Form(
+                key: _formKey2,
+                autovalidateMode: AutovalidateMode.onUserInteraction,
+                child: TextFormField(
+                  initialValue: statusMessage, // for testing
+                  decoration: const InputDecoration(
+                    isDense: true,
+                    /*icon: Icon(Icons.email),*/
+                    hintText: 'Update your status message.',
+                    labelText: 'Status',
+                    border: OutlineInputBorder(),
+                  ),
+                  onSaved: (String? value) {
+                    statusMessage = value!;
                   },
                 ),
               ),
@@ -141,10 +150,10 @@ class _RegisterScreenState extends State<RegisterScreen> {
                 key: _formKey3,
                 autovalidateMode: AutovalidateMode.onUserInteraction,
                 child: TextFormField(
-                  initialValue: 'Password1!', // for testing
+                  initialValue: 'Password1!',
                   decoration: InputDecoration(
                     isDense: true,
-                    labelText: 'Password',
+                    labelText: 'New password',
                     border: OutlineInputBorder(),
                   ),
                   validator: (value) {
@@ -179,7 +188,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
                       return null;
                     }
                   },
-                  onSaved: (value) => setState(() => userPassword = value!),
+                  onSaved: (value) => newPassword = value!,
                   keyboardType: TextInputType.visiblePassword,
                   obscureText: true,
                 ),
@@ -200,14 +209,9 @@ class _RegisterScreenState extends State<RegisterScreen> {
                     _formKey3.currentState!.save();
                     _formKey4.currentState!.save();
 
-                    if (useApi == 0) {
-                      token = await _getTokenPlaceholder();
-                    } else if (useApi == 1) {
-                      // TODO register user and login to get token
-                    }
-                    print('feedback - token: ' + token.token);
+                    //TODO here update user data
 
-                    final message = 'Account created\nuser name: $userName';
+                    final message = 'Profile data updated';
                     final snackBar = SnackBar(
                       content: Text(
                         message,
@@ -217,11 +221,10 @@ class _RegisterScreenState extends State<RegisterScreen> {
                     );
                     ScaffoldMessenger.of(context).showSnackBar(snackBar);
                   }
-                  Navigator.pushReplacementNamed(context, 'main_screen',
-                      arguments: token);
+                  Navigator.pop(context);
                 },
                 child: Text(
-                  'Register user',
+                  'Save',
                   style: TextStyle(color: Colors.white),
                 ),
               ),

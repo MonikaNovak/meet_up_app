@@ -1,11 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:meet_up_vor_2/api/models/Friend.dart';
 import 'package:meet_up_vor_2/api/models/Token.dart';
-import 'package:meet_up_vor_2/api/models/User.dart';
 import 'package:meet_up_vor_2/components/app_bar.dart';
 import 'package:meet_up_vor_2/screens/page_friendlist.dart';
-
-import '../main.dart';
 import 'page_events.dart';
 import 'page_home.dart';
 import 'page_groups.dart';
@@ -22,33 +18,6 @@ class _MainScreenState extends State<MainScreen> {
   Widget build(BuildContext context) {
     //logger.d("Rebuild main screen"); // console feedback
 
-    // user from json
-    /*final user = ModalRoute.of(context)!.settings.arguments
-        as User; //get user from local json
-    Widget _buildBody(int index) {
-      switch (index) {
-        case 0:
-          {
-            return new HomePage(user);
-          }
-        case 1:
-          {
-            return new PeoplePage(user);
-          }
-        case 2:
-          {
-            return new GroupsPage(user);
-          }
-        case 3:
-          {
-            return new EventPage(user);
-          }
-      }
-      // last return is only a fallback but should not happen
-      return new HomePage(user);
-    }*/
-
-    // from rest API
     final token = ModalRoute.of(context)!.settings.arguments as Token;
 
     Widget _buildBody(int index) {
@@ -122,3 +91,29 @@ class _MainScreenState extends State<MainScreen> {
     );
   }
 }
+
+// user from json
+/*final user = ModalRoute.of(context)!.settings.arguments
+        as User; //get user from local json
+    Widget _buildBody(int index) {
+      switch (index) {
+        case 0:
+          {
+            return new HomePage(user);
+          }
+        case 1:
+          {
+            return new PeoplePage(user);
+          }
+        case 2:
+          {
+            return new GroupsPage(user);
+          }
+        case 3:
+          {
+            return new EventPage(user);
+          }
+      }
+      // last return is only a fallback but should not happen
+      return new HomePage(user);
+    }*/

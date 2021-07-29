@@ -1,7 +1,6 @@
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:logger/logger.dart';
-import 'package:meet_up_vor_2/api/models/User.dart';
 import 'package:meet_up_vor_2/components/image_capture_widget.dart';
 import 'package:meet_up_vor_2/screens/page_home.dart';
 import 'package:meet_up_vor_2/screens/screen_add_friend.dart';
@@ -9,8 +8,10 @@ import 'package:meet_up_vor_2/screens/screen_detail_event.dart';
 import 'package:meet_up_vor_2/screens/screen_detail_friend_profile.dart';
 import 'package:meet_up_vor_2/screens/screen_detail_group.dart';
 import 'package:meet_up_vor_2/screens/screen_detail_group_members.dart';
+import 'package:meet_up_vor_2/screens/screen_edit_profile.dart';
 import 'package:meet_up_vor_2/screens/screen_main.dart';
 import 'package:meet_up_vor_2/screens/page_friendlist.dart';
+import 'package:meet_up_vor_2/screens/screen_pending_requests.dart';
 import 'package:meet_up_vor_2/screens/screen_register.dart';
 import 'package:meet_up_vor_2/screens/screen_settings.dart';
 import 'package:meet_up_vor_2/screens/screen_detail_user_profile.dart';
@@ -47,9 +48,12 @@ class MyApp extends StatelessWidget {
     return MaterialApp(
       title: 'Flutter Demo',
       theme: ThemeData(
+          primaryColor: Colors.deepPurple,
+          primarySwatch: Colors.deepPurple,
+          splashColor: Colors.deepPurple.shade200,
           textTheme: TextTheme(
-        bodyText2: TextStyle(color: Colors.black),
-      )),
+            bodyText2: TextStyle(color: Colors.black),
+          )),
       initialRoute: 'welcome_screen',
       routes: {
         'welcome_screen': (context) => LoginScreen(),
@@ -63,6 +67,8 @@ class MyApp extends StatelessWidget {
         'friend_profile': (context) => FriendProfileScreen(),
         'image_capture': (context) => ImageCapture(),
         'add_friend': (context) => AddFriend(),
+        'pending_requests': (context) => PendingRequests(),
+        'user_edit_profile': (context) => EditProfile(),
       },
     );
   }

@@ -1,10 +1,18 @@
+import 'dart:convert';
+import 'dart:io';
+
 import 'package:flutter/material.dart';
+import 'package:geocoding/geocoding.dart';
 import 'package:meet_up_vor_2/api/models/EventMeeting.dart';
+import 'package:meet_up_vor_2/api/models/Group.dart';
 import 'package:meet_up_vor_2/api/models/Token.dart';
 import 'package:meet_up_vor_2/api/models/User.dart';
 import 'package:meet_up_vor_2/api/providers/LoginProvider.dart';
 import 'package:meet_up_vor_2/constants.dart';
 import 'package:meet_up_vor_2/api/api_client.dart';
+import 'package:http/http.dart' as http;
+
+import '../main.dart';
 
 /// from database:
 /// token
@@ -12,7 +20,8 @@ import 'package:meet_up_vor_2/api/api_client.dart';
 /// new messages (later)
 
 class HomePage extends StatefulWidget {
-  late final Token token;
+  // todo check token not necessary late?
+  final Token token;
   HomePage(this.token);
   late final User userFinal;
 
@@ -23,29 +32,108 @@ class HomePage extends StatefulWidget {
 class _HomePageState extends State<HomePage> {
   Future<User> _getUser(Token token) async {
     var userFuture;
+    String tokenString = token.token;
     if (token.token == '123456789') {
-      userFuture = await LoginProvider(Client().init()).login() as User;
+      userFuture =
+          await LoginProvider(Client().init()).getUserLocalJson() as User;
+    } else {
+      try {
+        final response = await http
+            .get(Uri.parse('http://ccproject.robertdoes.it/users'), headers: {
+          "Content-Type": "application/json",
+          "Charset": "utf-8",
+          "Accept": "application/json",
+          "Authorization": "Bearer $tokenString",
+        });
+        if (response.statusCode == 200) {
+          String jsonsDataString = response.body.toString();
+          print('FEEDBACK - JSON status code 200, data string: ' +
+              jsonDecode(jsonsDataString).toString());
+          userFuture = User.fromJson(json.decode(response.body.toString()));
+        }
+      } catch (err, stack) {
+        logger.e("Login failed...", err, stack);
+        throw err;
+      }
     }
     return userFuture;
   }
 
   void _defineUser() async {
-    widget.userFinal = await _getUser(widget.token);
+    widget.userFinal = await _getUser(widget.token) as User;
   }
 
+  //
+  //
+  // hardcoded lists:
+  List<EventMeeting> _hardcodeListOfEvents() {
+    List<EventMeeting> listOfEvents = new List.empty(growable: true);
+    EventMeeting event1 = new EventMeeting('aaa', 47.23962176969944,
+        9.597157658181816, 'Gin degustation', 'Fr 2.7.2021');
+    EventMeeting event2 = new EventMeeting('bbb', 47.23962176969944,
+        9.597157658181816, 'Whiskey degustation', 'Fr 9.7.2021');
+    EventMeeting event3 = new EventMeeting('ccc', 47.23962176969944,
+        9.597157658181816, 'Beer degustation', 'Fr 16.7.2021');
+    listOfEvents.add(event1);
+    listOfEvents.add(event2);
+    listOfEvents.add(event3);
+    print('feedback - list of events hardcoded: ' +
+        listOfEvents[0].eventName +
+        listOfEvents[1].eventName +
+        listOfEvents[2].eventName);
+    return listOfEvents;
+  }
+
+  List<Group> _hardcodeListOfGroups() {
+    List<Group> listOfGroups = new List.empty(growable: true);
+
+    List<EventMeeting> listOfEvents = new List.empty(growable: true);
+    EventMeeting event1 = new EventMeeting('aaa', 47.23962176969944,
+        9.597157658181816, 'Gin degustation', 'Fr 2.7.2021');
+    EventMeeting event2 = new EventMeeting('bbb', 47.23962176969944,
+        9.597157658181816, 'Whiskey degustation', 'Fr 9.7.2021');
+    EventMeeting event3 = new EventMeeting('ccc', 47.23962176969944,
+        9.597157658181816, 'Beer degustation', 'Fr 16.7.2021');
+    listOfEvents.add(event1);
+    listOfEvents.add(event2);
+    listOfEvents.add(event3);
+
+    Group group1 = new Group(
+        'monika.n',
+        'https://www.jolie.de/sites/default/files/styles/facebook/public/images/2017/07/14/partypeople.jpg?itok=H8Kltq60',
+        'The crazy people',
+        '1111',
+        listOfEvents);
+    Group group2 = new Group(
+        'jimmy',
+        'https://www.jolie.de/sites/default/files/styles/facebook/public/images/2017/07/14/partypeople.jpg?itok=H8Kltq60',
+        'The weird people',
+        '2222',
+        listOfEvents);
+    Group group3 = new Group(
+        'luca',
+        'https://www.jolie.de/sites/default/files/styles/facebook/public/images/2017/07/14/partypeople.jpg?itok=H8Kltq60',
+        'The awesome people',
+        '3333',
+        listOfEvents);
+    listOfGroups.add(group1);
+    listOfGroups.add(group2);
+    listOfGroups.add(group3);
+    return listOfGroups;
+  }
+  //
+  //
+  //
+
+  List<String> _locationsAddresses = new List.empty(growable: true);
   late List<EventMeeting> _listOfEvents;
   final _biggerFont = const TextStyle(fontSize: 18.0);
-
-/*  @override
-  void initState() {
-    super.initState();
-    _getUser(widget.token);
-    print(widget.userFinal);
-  }*/
+  late List<Group> hardocdedListOfGroups;
 
   @override
   Widget build(BuildContext context) {
-    _defineUser();
+    // _defineUser();
+    // _buildEventList();
     return FutureBuilder<User>(
         future: _getUser(widget.token),
         builder: (context, snapshot) {
@@ -56,9 +144,8 @@ class _HomePageState extends State<HomePage> {
               if (snapshot.hasError)
                 return Text('Error: ${snapshot.error}');
               else
-                _buildEventList();
-              print(
-                  'feedback - build homepage, user: ' + widget.userFinal.name);
+                widget.userFinal = snapshot.data as User;
+              _buildEventList();
               return _buildWidget();
           }
         });
@@ -67,61 +154,81 @@ class _HomePageState extends State<HomePage> {
   Widget _buildWidget() {
     return Scaffold(
       body: SafeArea(
-        minimum: EdgeInsets.all(20.0),
+        minimum: EdgeInsets.all(10.0),
         child: Column(
-          mainAxisAlignment: MainAxisAlignment.start,
           children: <Widget>[
-            Container(
-              padding: EdgeInsets.all(10.0),
-              color: Colors.grey.shade400,
-              child: Row(
-                children: <Widget>[
-                  CircleAvatar(
-                    radius: 50.0,
-                    /*backgroundImage: AssetImage(kUserProfilePicAddress),*/
-                    backgroundImage:
-                        new NetworkImage(widget.userFinal.profilImage),
-                  ),
-                  SizedBox(width: 20.0),
-                  Text(
-                    widget.userFinal.displayName,
-                    style:
-                        TextStyle(fontWeight: FontWeight.bold, fontSize: 24.0),
-                  ),
-                ],
+            SizedBox(
+              height: 10.0,
+            ),
+            Align(
+              alignment: Alignment.centerLeft,
+              child: Text(
+                'Upcoming events:',
+                textAlign: TextAlign.left,
+                style: kTextStyleItalic,
               ),
             ),
             SizedBox(
-              height: 20.0,
+              height: 10.0,
             ),
-            Padding(
+            /*Padding(
               padding: EdgeInsets.all(10.0),
               child: Text(
                 'Upcoming events:',
+                style: TextStyle(
+                  color: Colors.deepPurple,
+                ),
+                textAlign: TextAlign.left,
+              ),
+            ),*/
+            Expanded(
+              flex: 4,
+              child: Container(
+                decoration: kContainerBoxDecoration,
+                child: ListView.separated(
+                  separatorBuilder: (context, index) => Divider(
+                    height: 10.0,
+                    color: Colors.grey.shade300,
+                  ),
+                  shrinkWrap: true,
+                  padding: const EdgeInsets.all(0.0),
+                  itemCount: _listOfEvents.length,
+                  itemBuilder: (context, i) {
+                    return _buildRow(_listOfEvents[i]
+                        //, _locationsAddresses[i]
+                        );
+                  },
+                ),
               ),
             ),
-            Expanded(
-              child: ListView.separated(
-                separatorBuilder: (context, index) => Divider(),
+            /*Expanded(
+              child: ListView.builder(
                 shrinkWrap: true,
-                padding: const EdgeInsets.all(0.0),
                 itemCount: _listOfEvents.length,
                 itemBuilder: (context, i) {
-                  return _buildRow(_listOfEvents[i]);
+                  return _buildRow(_listOfEvents[i]
+                      //, _locationsAddresses[i]
+                      );
                 },
               ),
-            ),
+            ),*/
             SizedBox(
               height: 20.0,
             ),
-            Padding(
-              padding: EdgeInsets.all(10.0),
+            Align(
+              alignment: Alignment.centerLeft,
               child: Text(
                 'New messages:',
+                textAlign: TextAlign.left,
+                style: kTextStyleItalic,
               ),
             ),
-            Container(
-              child: Text('Messages TODO'),
+            Expanded(
+              flex: 3,
+              child: Container(
+                decoration: kContainerBoxDecoration,
+                child: Text('ToDo messages'),
+              ),
             ),
           ],
         ),
@@ -129,34 +236,78 @@ class _HomePageState extends State<HomePage> {
     );
   }
 
-  Widget _buildRow(EventMeeting event) {
+  Widget _buildRow(EventMeeting event
+      // , String address
+      ) {
     return new ListTile(
+      // isThreeLine: true,
+      // contentPadding: EdgeInsets.all(10.0),
+      contentPadding: EdgeInsets.symmetric(vertical: 6.0, horizontal: 16.0),
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.circular(15.0),
+      ),
+      //tileColor: Colors.grey.shade200,
+      tileColor: Colors.transparent,
       leading: new CircleAvatar(
-          backgroundColor: Colors.grey, child: Icon(Icons.location_on)),
+          // backgroundColor: Colors.grey,
+          child: Icon(Icons.location_on)),
+      dense: true,
       title: new Text(
         event.eventName,
         style: _biggerFont,
       ),
-      subtitle:
-          new Text('Time: ' + event.time + '\nLocation: ' + 'event.location'),
+      subtitle: new Text('Time: ' + event.time + '\nLocation: ' + 'address'),
       onTap: () {
+        hardocdedListOfGroups = _hardcodeListOfGroups();
+        Group groupToPass = hardocdedListOfGroups[1];
         // TODO pass the correct group or link group
         Navigator.pushNamed(context, 'event_detail',
-            arguments: [event, widget.userFinal.groups[0], widget.userFinal]);
+            arguments: [event, groupToPass, widget.userFinal]);
       },
     );
   }
 
   _buildEventList() async {
-    // TODO sort events by date
     List<EventMeeting> listOfEvents = new List.empty(growable: true);
     try {
-      listOfEvents = widget.userFinal.events;
+      if (widget.token.token == '123456789') {
+        listOfEvents = _hardcodeListOfEvents();
+      } else {
+        listOfEvents = _hardcodeListOfEvents();
+        // listOfEvents = widget.userFinal.events; //TODO HARDCODED
+      }
     } catch (exception) {
       print(exception.toString());
     }
-
-    print('feedback - group detail - fetch list of events');
+    print('feedback - fetch list of events');
     _listOfEvents = listOfEvents;
+
+    /*List<String> locationsAddresses = new List.empty(growable: true);
+    // List<String> locationsAddresses =
+    // List<String>.filled(listOfEvents.length, '');
+    int idx = 0;
+    _listOfEvents.forEach((element) async {
+      List<Placemark> _placemarks =
+          await placemarkFromCoordinates(element.lat, element.long);
+      Placemark place = _placemarks[0];
+      print('print street from place: ' + place.street.toString());
+
+      String locationToString =
+          '${place.street.toString()}, ${place.locality.toString()}, ${place.postalCode.toString()}';
+      print('print locationn to string: ' + locationToString);
+      print(idx);
+
+      locationsAddresses.insert(idx, locationToString);
+      // locationsAddresses[idx] = locationToString;
+      idx++;
+    });
+
+    // TODO CHECK!!!
+    _locationsAddresses = await locationsAddresses;
+    print('why is this not working? _locationsAddresses length: ' +
+        _locationsAddresses.length.toString());
+    locationsAddresses.forEach((element) {
+      print('print each location address ' + element);
+    });*/
   }
 }

@@ -10,6 +10,7 @@ class Client {
     if (kMockApi) {
       _dio.interceptors.add(new MockInterceptor());
     }
+    print('FEEDBACK - running init Client');
     _dio.options.baseUrl = kBaseUrl;
     return _dio;
   }

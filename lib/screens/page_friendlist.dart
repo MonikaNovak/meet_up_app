@@ -15,6 +15,10 @@ import 'package:cached_network_image/cached_network_image.dart';
 /// from database:
 /// list of friends
 
+// TODO display users with requested friendship
+// TODO display someone pending request from another user
+// TODO list of friend only with accepted status
+
 class FriendListPage extends StatefulWidget {
   late final Token token;
   FriendListPage(this.token);
@@ -28,7 +32,10 @@ class _FriendListPageState extends State<FriendListPage> {
   Future<User> _getUser(Token token) async {
     var userFuture;
     if (token.token == '123456789') {
-      userFuture = await LoginProvider(Client().init()).login() as User;
+      userFuture =
+          await LoginProvider(Client().init()).getUserLocalJson() as User;
+    } else {
+      // TODO get user from database
     }
     return userFuture;
   }
@@ -37,10 +44,38 @@ class _FriendListPageState extends State<FriendListPage> {
     widget.userFinal = await _getUser(widget.token);
   }
 
+  //
+  //
+  // hardcoded lists:
+  List<Friend> _hardcodeListOfFriends() {
+    List<Friend> listOfFriends = new List.empty(growable: true);
+    Friend friend1 = new Friend(
+        'leonido24',
+        'leon.barrett@example.com',
+        'https://randomuser.me/api/portraits/men/29.jpg',
+        'I like lemon ice-cream.',
+        'Leon',
+        0);
+    Friend friend2 = new Friend(
+        'ramanid',
+        'ramon.peck@example.com',
+        'https://randomuser.me/api/portraits/men/6.jpg',
+        'I like chocolate ice-cream.',
+        'Ramon',
+        1);
+    listOfFriends.add(friend1);
+    listOfFriends.add(friend2);
+    return listOfFriends;
+  }
+  //
+  //
+  //
+
   //friend list data
   bool _isProgressBarShown = true;
   final _biggerFont = const TextStyle(fontSize: 18.0);
   late List<Friend> _listOfFriends;
+  late List<Friend> _listOfFriendsPending;
   late List<Friend> _listOfFriendsFiltered;
   TextEditingController searchController = new TextEditingController();
 
@@ -85,8 +120,28 @@ class _FriendListPageState extends State<FriendListPage> {
     return Scaffold(
       body: Column(
         children: <Widget>[
+          Row(
+            mainAxisAlignment: MainAxisAlignment.end,
+            children: [
+              TextButton(
+                onPressed: () {
+                  Navigator.pushNamed(context, 'pending_requests',
+                      arguments: _listOfFriendsPending);
+                },
+                child: Text(
+                  'Pending requests',
+                  style: TextStyle(color: Colors.deepPurple),
+                ),
+                /*style: TextButton.styleFrom(
+                  padding: EdgeInsets.all(0),
+                  minimumSize: Size.zero,
+                ),*/
+              ),
+              Icon(Icons.arrow_right, color: Colors.deepPurple),
+            ],
+          ),
           Padding(
-            padding: const EdgeInsets.all(8.0),
+            padding: const EdgeInsets.fromLTRB(8.0, 0, 8.0, 8.0),
             child: Form(
               key: _formKey,
               child: TextField(
@@ -106,38 +161,25 @@ class _FriendListPageState extends State<FriendListPage> {
               stream: _streamController.stream,
               initialData: _listOfFriendsFiltered,
               builder: (context, snapshot) {
-                return Expanded(
-                  child: ListView.separated(
-                    separatorBuilder: (context, index) => Divider(),
-                    shrinkWrap: true,
-                    padding: const EdgeInsets.all(0.0),
-                    itemCount: _listOfFriendsFiltered.length,
-                    itemBuilder: (context, i) {
-                      return _buildRow(_listOfFriendsFiltered[i]);
-                    },
-                  ),
-                );
+                if (_listOfFriendsFiltered.length == 0) {
+                  return Text(
+                    'No friend found.',
+                    style: TextStyle(fontStyle: FontStyle.italic),
+                  );
+                } else {
+                  return Expanded(
+                    child: ListView.separated(
+                      separatorBuilder: (context, index) => Divider(),
+                      shrinkWrap: true,
+                      padding: const EdgeInsets.all(0.0),
+                      itemCount: _listOfFriendsFiltered.length,
+                      itemBuilder: (context, i) {
+                        return _buildRow(_listOfFriendsFiltered[i]);
+                      },
+                    ),
+                  );
+                }
               }),
-          /*StreamBuilder<List<Friend>>(
-              stream: _streamController.stream,
-              initialData: _listOfFriends,
-              builder: (context, snapshot) {
-                return Expanded(
-                  child: ListView.separated(
-                    separatorBuilder: (context, index) => Divider(),
-                    shrinkWrap: true,
-                    padding: const EdgeInsets.all(0.0),
-                    itemCount: isSearching == true
-                        ? _listOfFriendsFiltered.length
-                        : _listOfFriends.length,
-                    itemBuilder: (context, i) {
-                      return isSearching == true
-                          ? _buildRow(_listOfFriendsFiltered[i])
-                          : _buildRow(_listOfFriends[i]);
-                    },
-                  ),
-                );
-              }),*/
         ],
       ),
       floatingActionButton: FloatingActionButton(
@@ -165,8 +207,9 @@ class _FriendListPageState extends State<FriendListPage> {
           friend.profileImageUrl,
           friend.name,
           friend.displayName,
-          friend.email,
-          friend.statusMessage
+          friend.statusMessage,
+          widget.token,
+          false // friendToAdd
         ]);
       },
     );
@@ -184,6 +227,14 @@ class _FriendListPageState extends State<FriendListPage> {
     _listOfFriends = listOfFriends;
     _listOfFriendsFiltered = listOfFriends;
     _isProgressBarShown = false;
+
+    List<Friend> listOfFriendsPending = new List.empty(growable: true);
+    _listOfFriends.forEach((element) {
+      if (element.status == 1) {
+        listOfFriendsPending.add(element);
+      }
+    });
+    _listOfFriendsPending = listOfFriendsPending;
   }
 
   filterFriends() {

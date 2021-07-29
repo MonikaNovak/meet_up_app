@@ -12,63 +12,72 @@
       "name" : "leonido24",
       "email": "leon.barrett@example.com",
       "profilImage": "https://randomuser.me/api/portraits/men/29.jpg",
-      "statusMessage": "I like lemon ice-cream."
+      "statusMessage": "I like lemon ice-cream.",
+      "status": 0
     },
     {
       "displayName": "Ramon",
       "name" : "ramanid",
       "email": "ramon.peck@example.com",
       "profilImage": "https://randomuser.me/api/portraits/men/6.jpg",
-      "statusMessage": "I like chocolate ice-cream."
+      "statusMessage": "I like chocolate ice-cream.",
+      "status": 0
     },
     {
       "displayName": "Rossi",
       "name" : "rossalinda",
       "email": "ross.bryant@example.com",
       "profilImage": "https://randomuser.me/api/portraits/women/99.jpg",
-      "statusMessage": "I like strawberry ice-cream."
+      "statusMessage": "I like strawberry ice-cream.",
+      "status": 1
     },
     {
       "displayName": "Barret",
       "name" : "barretoo",
       "email": "leon.barrett@example.com",
       "profilImage": "https://randomuser.me/api/portraits/men/62.jpg",
-      "statusMessage": "I like cherry ice-cream."
+      "statusMessage": "I like cherry ice-cream.",
+      "status": 1
     },
     {
       "displayName": "Pecky",
       "name" : "pickle",
       "email": "ramon.peck@example.com",
       "profilImage": "https://randomuser.me/api/portraits/women/85.jpg",
-      "statusMessage": "I like vanilla ice-cream."
+      "statusMessage": "I like vanilla ice-cream.",
+      "status": 0
     },
     {
       "displayName": "Bryant",
       "name" : "bumblebee",
       "email": "ross.bryant@example.com",
       "profilImage": "https://randomuser.me/api/portraits/men/47.jpg",
-      "statusMessage": "I like ginger ice-cream."
+      "statusMessage": "I like ginger ice-cream.",
+      "status": 0
     },
     {
       "displayName": "Nico",
       "name" : "nicolatesla",
       "email": "leon.barrett@example.com",
       "profilImage": "https://randomuser.me/api/portraits/men/22.jpg",
-      "statusMessage": "I like poppy ice-cream."
+      "statusMessage": "I like poppy ice-cream.",
+      "status": 0
     },
     {
       "displayName": "Luca",
       "name" : "lucid",
       "email": "ramon.peck@example.com",
       "profilImage": "https://randomuser.me/api/portraits/men/46.jpg",
-      "statusMessage": "I like smurf ice-cream."
+      "statusMessage": "I like smurf ice-cream.",
+      "status": 0
     },
     {
       "displayName": "Rami",
       "name" : "ramona.mona",
       "email": "ross.bryant@example.com",
       "profilImage": "https://randomuser.me/api/portraits/women/55.jpg",
-      "statusMessage": "I like caramel ice-cream."
+      "statusMessage": "I like caramel ice-cream.",
+      "status": 0
     }
   ],
   "groupslist" :[

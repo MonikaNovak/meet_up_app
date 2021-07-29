@@ -1,17 +1,15 @@
-/*import 'dart:html';*/
-import 'dart:io';
+import 'dart:convert';
 
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:meet_up_vor_2/api/models/Token.dart';
 import 'package:meet_up_vor_2/api/models/User.dart';
 import 'package:meet_up_vor_2/api/providers/LoginProvider.dart';
-import 'package:meet_up_vor_2/components/app_bar.dart';
-import 'package:image_cropper/image_cropper.dart';
-import 'package:image_picker/image_picker.dart';
 import '../constants.dart';
 import 'package:meet_up_vor_2/api/api_client.dart';
+import 'package:http/http.dart' as http;
+
+import '../main.dart';
 
 /// from database:
 /// user info
@@ -28,16 +26,34 @@ class UserProfileScreen extends StatefulWidget {
 }
 
 class _UserProfileScreenState extends State<UserProfileScreen> {
+  late final String profilePicUrlString;
   Future<User> _getUser(Token token) async {
     var userFuture;
+    String tokenString = token.token;
     if (token.token == '123456789') {
-      userFuture = await LoginProvider(Client().init()).login() as User;
+      userFuture =
+          await LoginProvider(Client().init()).getUserLocalJson() as User;
+    } else {
+      try {
+        final response = await http
+            .get(Uri.parse('http://ccproject.robertdoes.it/users'), headers: {
+          "Content-Type": "application/json",
+          "Charset": "utf-8",
+          "Accept": "application/json",
+          "Authorization": "Bearer $tokenString",
+        });
+        if (response.statusCode == 200) {
+          String jsonsDataString = response.body.toString();
+          print('FEEDBACK - JSON status code 200, data string: ' +
+              jsonDecode(jsonsDataString).toString());
+          userFuture = User.fromJson(json.decode(response.body.toString()));
+        }
+      } catch (err, stack) {
+        logger.e("Login failed...", err, stack);
+        throw err;
+      }
     }
     return userFuture;
-  }
-
-  void _defineUser() async {
-    widget.userFinal = await _getUser(widget.token);
   }
 
   /*@override
@@ -59,10 +75,6 @@ class _UserProfileScreenState extends State<UserProfileScreen> {
   @override
   Widget build(BuildContext context) {
     widget.token = ModalRoute.of(context)!.settings.arguments as Token;
-    _defineUser();
-    // var userFinal = _getUser(token) as User;
-    // print('in build user final name ' + userFinal.name);
-    // final Future<User> _userFinal = _getUser(token);
     return FutureBuilder<User>(
         future: _getUser(widget.token),
         // future: userFinal,
@@ -75,8 +87,8 @@ class _UserProfileScreenState extends State<UserProfileScreen> {
               if (snapshot.hasError)
                 return Text('Error: ${snapshot.error}');
               else
-                print('feedback - build user profile detail, user: ' +
-                    widget.userFinal.name);
+                widget.userFinal = snapshot.data as User;
+              profilePicUrlString = widget.userFinal.profileImageUrl;
               return _buildWidget();
           }
         });
@@ -106,45 +118,60 @@ class _UserProfileScreenState extends State<UserProfileScreen> {
                 padding: EdgeInsets.all(20.0),
                 color: Colors.grey.shade300,
                 child: Row(
-                  children: <Widget>[
-                    CircleAvatar(
-                      radius: 50.0,
-                      backgroundImage:
-                          new NetworkImage(widget.userFinal.profilImage),
-                      child: Align(
-                        alignment: Alignment.bottomRight,
-                        child: CircleAvatar(
-                          backgroundColor: Colors.white,
-                          radius: 15.0,
-                          child: IconButton(
-                            onPressed: () {
-                              Navigator.pushNamed(context, 'image_capture',
-                                  arguments: widget.userFinal);
-                            },
-                            iconSize: 12.0,
-                            icon: Icon(
-                              Icons.camera_alt,
-                              size: 15.0,
-                              color: Colors.grey.shade600,
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.start,
+                      children: <Widget>[
+                        CircleAvatar(
+                          radius: 50.0,
+                          backgroundImage:
+                              new NetworkImage('https://$profilePicUrlString'),
+                          child: Align(
+                            alignment: Alignment.bottomRight,
+                            child: CircleAvatar(
+                              backgroundColor: Colors.white,
+                              radius: 15.0,
+                              child: IconButton(
+                                onPressed: () {
+                                  Navigator.pushNamed(context, 'image_capture',
+                                      arguments: widget.userFinal);
+                                },
+                                iconSize: 12.0,
+                                icon: Icon(
+                                  Icons.camera_alt,
+                                  size: 15.0,
+                                  color: Colors.deepPurple,
+                                ),
+                              ),
                             ),
                           ),
                         ),
-                      ),
-                    ),
-                    SizedBox(width: 20.0),
-                    Column(
-                      children: <Widget>[
-                        Text(
-                          /*'test',*/
-                          widget.userFinal.displayName,
-                          style: TextStyle(
-                              fontWeight: FontWeight.bold, fontSize: 24.0),
+                        SizedBox(width: 20.0),
+                        Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: <Widget>[
+                            Text(
+                              /*'test',*/
+                              widget.userFinal.displayName,
+                              style: TextStyle(
+                                  fontWeight: FontWeight.bold, fontSize: 24.0),
+                            ),
+                            Text(
+                              widget.userFinal.name,
+                            )
+                          ],
                         ),
-                        Text(
-                          'username',
-                        )
                       ],
                     ),
+                    /*IconButton(
+                      icon: Icon(
+                        Icons.edit,
+                        size: 20,
+                      ),
+                      onPressed: () {},
+                      color: Colors.deepPurple,
+                    ),*/
                   ],
                 ),
               ),
@@ -154,11 +181,25 @@ class _UserProfileScreenState extends State<UserProfileScreen> {
               Container(
                 padding: EdgeInsets.all(10.0),
                 color: Colors.grey.shade300,
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: <Widget>[
-                    Text('email address'),
-                    Text(widget.userFinal.email),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: <Widget>[
+                        Text('Email address:',
+                            style: TextStyle(fontStyle: FontStyle.italic)),
+                        Text(widget.userFinal.email),
+                      ],
+                    ),
+                    /*IconButton(
+                      icon: Icon(
+                        Icons.edit,
+                        size: 20,
+                      ),
+                      onPressed: () {},
+                      color: Colors.deepPurple,
+                    ),*/
                   ],
                 ),
               ),
@@ -168,11 +209,25 @@ class _UserProfileScreenState extends State<UserProfileScreen> {
               Container(
                 padding: EdgeInsets.all(10.0),
                 color: Colors.grey.shade300,
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: <Widget>[
-                    Text('status'),
-                    Text(widget.userFinal.statusMessage),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: <Widget>[
+                        Text('Status:',
+                            style: TextStyle(fontStyle: FontStyle.italic)),
+                        Text(widget.userFinal.statusMessage),
+                      ],
+                    ),
+                    /*IconButton(
+                      icon: Icon(
+                        Icons.edit,
+                        size: 20,
+                      ),
+                      onPressed: () {},
+                      color: Colors.deepPurple,
+                    ),*/
                   ],
                 ),
               ),
@@ -187,9 +242,12 @@ class _UserProfileScreenState extends State<UserProfileScreen> {
                       backgroundColor:
                           MaterialStateProperty.all<Color>(Colors.deepPurple),
                     ),
-                    onPressed: () {},
+                    onPressed: () {
+                      Navigator.pushNamed(context, 'user_edit_profile',
+                          arguments: [widget.token, widget.userFinal]);
+                    },
                     child: Text(
-                      "Edit",
+                      "Edit profile",
                       style: TextStyle(color: Colors.white),
                     ),
                   ),
@@ -203,6 +261,7 @@ class _UserProfileScreenState extends State<UserProfileScreen> {
                     ),
                     onPressed: () {
                       Navigator.pushReplacementNamed(context, 'welcome_screen');
+                      // TODO log out
                     },
                     child: Text(
                       "Log out",

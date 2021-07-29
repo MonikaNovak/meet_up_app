@@ -4,9 +4,9 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:meet_up_vor_2/api/models/EventMeeting.dart';
 import 'package:meet_up_vor_2/api/models/Group.dart';
-import 'package:meet_up_vor_2/api/models/User.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:geocoding/geocoding.dart';
+import 'package:meet_up_vor_2/api/models/User.dart';
 
 /// from database:
 /// event:
@@ -26,7 +26,7 @@ class EventDetail extends StatefulWidget {
 
 class _EventDetailState extends State<EventDetail> {
   Set<Marker> _markers = {};
-  String address = '';
+  String _address = '';
 
   void _onMapCreated(GoogleMapController controller) async {
     _markers.add(
@@ -44,8 +44,10 @@ class _EventDetailState extends State<EventDetail> {
     List<Placemark> _placemarks =
         await placemarkFromCoordinates(47.23962176969944, 9.597157658181816);
     Placemark place = _placemarks[0];
+    print(_placemarks.toString());
     print(place.toString());
-    address = '${place.street}, ${place.locality}, ${place.postalCode}';
+    _address = '${place.street}, ${place.locality}, ${place.postalCode}';
+    _streamControllerAddress.sink.add(_address);
 
     // TODO update location
   }
@@ -53,6 +55,7 @@ class _EventDetailState extends State<EventDetail> {
   void _getAddressFromLongLat() {}
 
   final StreamController<Set<Marker>> _streamController = StreamController();
+  final StreamController<String> _streamControllerAddress = StreamController();
 
   @override
   Widget build(BuildContext context) {
@@ -97,21 +100,16 @@ class _EventDetailState extends State<EventDetail> {
                       height: 10.0,
                     ),
                     Text('Location:'),
-                    StreamBuilder<Set<Marker>>(
-                        stream: _streamController.stream,
-                        initialData: _markers,
+                    StreamBuilder<String>(
+                        stream: _streamControllerAddress.stream,
+                        initialData: _address,
                         builder: (context, snapshot) {
                           return Text(
-                            address,
+                            _address,
                             style: TextStyle(
                                 fontSize: 15.0, fontWeight: FontWeight.bold),
                           );
                         }),
-                    Text(
-                      address,
-                      style: TextStyle(
-                          fontSize: 15.0, fontWeight: FontWeight.bold),
-                    ),
                     SizedBox(
                       height: 10.0,
                     ),

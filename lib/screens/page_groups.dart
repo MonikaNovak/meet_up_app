@@ -1,6 +1,7 @@
 import 'dart:async';
 
 import 'package:flutter/material.dart';
+import 'package:meet_up_vor_2/api/models/EventMeeting.dart';
 import 'package:meet_up_vor_2/api/models/Group.dart';
 import 'package:meet_up_vor_2/api/models/Token.dart';
 import 'package:meet_up_vor_2/api/models/User.dart';
@@ -23,7 +24,10 @@ class _GroupsPageState extends State<GroupsPage> {
   Future<User> _getUser(Token token) async {
     var userFuture;
     if (token.token == '123456789') {
-      userFuture = await LoginProvider(Client().init()).login() as User;
+      userFuture =
+          await LoginProvider(Client().init()).getUserLocalJson() as User;
+    } else {
+      // TODO get user from database
     }
     return userFuture;
   }
@@ -31,6 +35,51 @@ class _GroupsPageState extends State<GroupsPage> {
   void _defineUser() async {
     widget.userFinal = await _getUser(widget.token);
   }
+
+  //
+  //
+  // hardcoded lists:
+
+  List<Group> _hardcodeListOfGroups() {
+    List<Group> listOfGroups = new List.empty(growable: true);
+
+    List<EventMeeting> listOfEvents = new List.empty(growable: true);
+    EventMeeting event1 = new EventMeeting('aaa', 47.23962176969944,
+        9.597157658181816, 'Gin degustation', 'Fr 2.7.2021');
+    EventMeeting event2 = new EventMeeting('bbb', 47.23962176969944,
+        9.597157658181816, 'Whiskey degustation', 'Fr 9.7.2021');
+    EventMeeting event3 = new EventMeeting('ccc', 47.23962176969944,
+        9.597157658181816, 'Beer degustation', 'Fr 16.7.2021');
+    listOfEvents.add(event1);
+    listOfEvents.add(event2);
+    listOfEvents.add(event3);
+
+    Group group1 = new Group(
+        'monika.n',
+        'https://www.jolie.de/sites/default/files/styles/facebook/public/images/2017/07/14/partypeople.jpg?itok=H8Kltq60',
+        'The crazy people',
+        '1111',
+        listOfEvents);
+    Group group2 = new Group(
+        'jimmy',
+        'https://www.jolie.de/sites/default/files/styles/facebook/public/images/2017/07/14/partypeople.jpg?itok=H8Kltq60',
+        'The weird people',
+        '2222',
+        listOfEvents);
+    Group group3 = new Group(
+        'luca',
+        'https://www.jolie.de/sites/default/files/styles/facebook/public/images/2017/07/14/partypeople.jpg?itok=H8Kltq60',
+        'The awesome people',
+        '3333',
+        listOfEvents);
+    listOfGroups.add(group1);
+    listOfGroups.add(group2);
+    listOfGroups.add(group3);
+    return listOfGroups;
+  }
+  //
+  //
+  //
 
   final _biggerFont = const TextStyle(fontSize: 18.0);
   late List<Group> _listOfGroups;
@@ -146,7 +195,8 @@ class _GroupsPageState extends State<GroupsPage> {
   _buildList() async {
     List<Group> listOfGroups = new List.empty(growable: true);
     try {
-      listOfGroups = widget.userFinal.groups;
+      // listOfGroups = widget.userFinal.groups; TODO HARDCODED
+      listOfGroups = _hardcodeListOfGroups();
     } catch (exception) {
       print(exception.toString());
     }

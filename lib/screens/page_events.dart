@@ -4,8 +4,8 @@ import 'package:flutter/material.dart';
 import 'package:meet_up_vor_2/api/models/EventMeeting.dart';
 import 'package:meet_up_vor_2/api/models/Group.dart';
 import 'package:meet_up_vor_2/api/models/Token.dart';
-import 'package:meet_up_vor_2/api/models/User.dart';
 import 'package:meet_up_vor_2/api/api_client.dart';
+import 'package:meet_up_vor_2/api/models/User.dart';
 import 'package:meet_up_vor_2/api/providers/LoginProvider.dart';
 
 /// from database:
@@ -25,14 +25,81 @@ class _EventPageState extends State<EventPage> {
   Future<User> _getUser(Token token) async {
     var userFuture;
     if (token.token == '123456789') {
-      userFuture = await LoginProvider(Client().init()).login() as User;
+      userFuture =
+          await LoginProvider(Client().init()).getUserLocalJson() as User;
+    } else {
+      // TODO get user from database
     }
     return userFuture;
   }
 
+  //
+  //
+  // hardcoded lists:
+  List<EventMeeting> _hardcodeListOfEvents() {
+    List<EventMeeting> listOfEvents = new List.empty(growable: true);
+    EventMeeting event1 = new EventMeeting('aaa', 47.23962176969944,
+        9.597157658181816, 'Gin degustation', 'Fr 2.7.2021');
+    EventMeeting event2 = new EventMeeting('bbb', 47.23962176969944,
+        9.597157658181816, 'Whiskey degustation', 'Fr 9.7.2021');
+    EventMeeting event3 = new EventMeeting('ccc', 47.23962176969944,
+        9.597157658181816, 'Beer degustation', 'Fr 16.7.2021');
+    listOfEvents.add(event1);
+    listOfEvents.add(event2);
+    listOfEvents.add(event3);
+    print('feedback - list of events hardcoded: ' +
+        listOfEvents[0].eventName +
+        listOfEvents[1].eventName +
+        listOfEvents[2].eventName);
+    return listOfEvents;
+  }
+
+  List<Group> _hardcodeListOfGroups() {
+    List<Group> listOfGroups = new List.empty(growable: true);
+
+    List<EventMeeting> listOfEvents = new List.empty(growable: true);
+    EventMeeting event1 = new EventMeeting('aaa', 47.23962176969944,
+        9.597157658181816, 'Gin degustation', 'Fr 2.7.2021');
+    EventMeeting event2 = new EventMeeting('bbb', 47.23962176969944,
+        9.597157658181816, 'Whiskey degustation', 'Fr 9.7.2021');
+    EventMeeting event3 = new EventMeeting('ccc', 47.23962176969944,
+        9.597157658181816, 'Beer degustation', 'Fr 16.7.2021');
+    listOfEvents.add(event1);
+    listOfEvents.add(event2);
+    listOfEvents.add(event3);
+
+    Group group1 = new Group(
+        'monika.n',
+        'https://www.jolie.de/sites/default/files/styles/facebook/public/images/2017/07/14/partypeople.jpg?itok=H8Kltq60',
+        'The crazy people',
+        '1111',
+        listOfEvents);
+    Group group2 = new Group(
+        'jimmy',
+        'https://www.jolie.de/sites/default/files/styles/facebook/public/images/2017/07/14/partypeople.jpg?itok=H8Kltq60',
+        'The weird people',
+        '2222',
+        listOfEvents);
+    Group group3 = new Group(
+        'luca',
+        'https://www.jolie.de/sites/default/files/styles/facebook/public/images/2017/07/14/partypeople.jpg?itok=H8Kltq60',
+        'The awesome people',
+        '3333',
+        listOfEvents);
+    listOfGroups.add(group1);
+    listOfGroups.add(group2);
+    listOfGroups.add(group3);
+    return listOfGroups;
+  }
+  //
+  //
+  //
+
   void _defineUser() async {
     widget.userFinal = await _getUser(widget.token);
-    widget.groupToPass = widget.userFinal.groups[0];
+    // widget.groupToPass = widget.userFinal.groups[0]; TODO HARDCODED
+    List<Group> listGroupsTemp = _hardcodeListOfGroups();
+    widget.groupToPass = listGroupsTemp[0];
   }
 
   final _biggerFont = const TextStyle(fontSize: 18.0);
@@ -124,7 +191,8 @@ class _EventPageState extends State<EventPage> {
   _buildList() async {
     List<EventMeeting> listOfEvents = new List.empty(growable: true);
     try {
-      listOfEvents = widget.userFinal.events;
+      // listOfEvents = widget.userFinal.events; TODO HARDCODED
+      listOfEvents = _hardcodeListOfEvents();
     } catch (exception) {
       print(exception.toString());
     }

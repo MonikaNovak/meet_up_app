@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:image_cropper/image_cropper.dart';
 import 'package:image_picker/image_picker.dart';
 import 'dart:io';
-import 'package:meet_up_vor_2/api/models/User.dart';
 
 class ImageCapture extends StatefulWidget {
   createState() => _ImageCaptureState();
@@ -60,7 +59,7 @@ class _ImageCaptureState extends State<ImageCapture> {
                 size: 30,
               ),
               onPressed: () => _pickImage(ImageSource.camera),
-              color: Colors.blue,
+              color: Colors.deepPurple,
             ),
             IconButton(
               icon: Icon(
@@ -68,7 +67,17 @@ class _ImageCaptureState extends State<ImageCapture> {
                 size: 30,
               ),
               onPressed: () => _pickImage(ImageSource.gallery),
-              color: Colors.pink,
+              color: Colors.deepPurple,
+            ),
+            IconButton(
+              icon: Icon(
+                Icons.save,
+                size: 30,
+              ),
+              onPressed: () {
+                // TODO update picture in database
+              },
+              color: Colors.deepPurple,
             ),
           ],
         ),

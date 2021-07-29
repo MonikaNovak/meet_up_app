@@ -1,19 +1,33 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:meet_up_vor_2/api/models/User.dart';
+import 'package:meet_up_vor_2/api/models/Token.dart';
 
 import '../constants.dart';
 
 /// from database:
 /// friend info
 /// later direct message option
+/// TODO request remove friend from list (with token)
 
 class FriendProfileScreen extends StatelessWidget {
-  const FriendProfileScreen({Key? key}) : super(key: key);
+  late final Token token;
+  late final bool friendToAdd;
+  late final String buttonMessage;
+
+  void isFriendToAdd() {
+    if (friendToAdd) {
+      buttonMessage = 'Send friend request';
+    } else {
+      buttonMessage = 'Remove friend from friend list';
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
     final arguments = ModalRoute.of(context)!.settings.arguments as List;
+    token = arguments[4];
+    friendToAdd = arguments[5];
+    isFriendToAdd();
     return Scaffold(
       appBar: AppBar(
         leading: BackButton(
@@ -23,7 +37,7 @@ class FriendProfileScreen extends StatelessWidget {
         ),
         backgroundColor: Colors.deepPurple,
         title: Text(
-          'Profile',
+          'Friend profile',
           style: TextStyle(fontSize: 15.0),
         ),
       ),
@@ -67,7 +81,7 @@ class FriendProfileScreen extends StatelessWidget {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: <Widget>[
-                  Text('email address'),
+                  Text('status'),
                   Text(arguments[3]),
                 ],
               ),
@@ -75,19 +89,16 @@ class FriendProfileScreen extends StatelessWidget {
             SizedBox(
               height: 20.0,
             ),
-            Container(
-              padding: EdgeInsets.all(10.0),
-              color: Colors.grey.shade300,
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: <Widget>[
-                  Text('status'),
-                  Text(arguments[4]),
-                ],
-              ),
-            ),
-            SizedBox(
-              height: 20.0,
+            TextButton(
+              onPressed: () {
+                if (friendToAdd) {
+                  // TODO request add friend to list (with token)
+                } else {
+                  // TODO request remove friend from list (with token)
+                }
+                ;
+              },
+              child: Text(buttonMessage),
             ),
           ],
         ),
