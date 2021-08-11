@@ -1,10 +1,7 @@
 import 'dart:io';
-import 'package:meet_up_vor_2/api/api_client.dart';
 import 'package:flutter/material.dart';
 import 'package:meet_up_vor_2/api/models/Token.dart';
-import 'package:meet_up_vor_2/api/providers/LoginProvider.dart';
 import 'package:meet_up_vor_2/constants.dart';
-
 import 'package:email_validator/email_validator.dart';
 
 class RegisterScreen extends StatefulWidget {
@@ -15,7 +12,7 @@ class RegisterScreen extends StatefulWidget {
 class _RegisterScreenState extends State<RegisterScreen> {
   //
   // USE LOCAL OR REST API: 0 for local, 1 for api
-  int useApi = 0;
+  int useApi = 1;
   //
   //
 

@@ -1,12 +1,14 @@
 import 'dart:async';
-
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:meet_up_vor_2/api/models/EventMeeting.dart';
 import 'package:meet_up_vor_2/api/models/Group.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:geocoding/geocoding.dart';
+import 'package:meet_up_vor_2/api/models/Token.dart';
 import 'package:meet_up_vor_2/api/models/User.dart';
+import 'package:meet_up_vor_2/api/models/UserGeneral.dart';
+import '../constants.dart';
 
 /// from database:
 /// event:
@@ -19,6 +21,8 @@ class EventDetail extends StatefulWidget {
   late final EventMeeting event;
   late final Group linkedGroup;
   late final User userPassed;
+  late final Token token;
+  late final List<UserGeneral> participants;
 
   @override
   _EventDetailState createState() => _EventDetailState();
@@ -52,7 +56,81 @@ class _EventDetailState extends State<EventDetail> {
     // TODO update location
   }
 
-  void _getAddressFromLongLat() {}
+  //
+  //
+  //hardcoded
+  void _hardcodeGroup() {
+    List<UserGeneral> listOfUsers = new List.empty(growable: true);
+    UserGeneral friend1 = new UserGeneral(
+        'leonido24',
+        'leon.barrett@example.com',
+        'https://randomuser.me/api/portraits/men/29.jpg',
+        'I like lemon ice-cream.',
+        'Leon');
+    listOfUsers.add(friend1);
+    List<EventMeeting> listOfEvents = new List.empty(growable: true);
+    EventMeeting event1 = new EventMeeting('aaa', 47.23962176969944,
+        9.597157658181816, 'Gin degustation', 'Fr 2.7.2021');
+    listOfEvents.add(event1);
+    widget.linkedGroup = new Group(
+        'monika.n',
+        'https://www.jolie.de/sites/default/files/styles/facebook/public/images/2017/07/14/partypeople.jpg?itok=H8Kltq60',
+        'The crazy people',
+        '1111',
+        listOfUsers,
+        listOfEvents);
+  }
+
+  //list of participants:
+  void _hardcodeListParticipants() {
+    List<UserGeneral> listOfUsers = new List.empty(growable: true);
+    UserGeneral friend1 = new UserGeneral(
+        'leonido24',
+        'leon.barrett@example.com',
+        'https://randomuser.me/api/portraits/men/29.jpg',
+        'I like lemon ice-cream.',
+        'Leon');
+    UserGeneral friend2 = new UserGeneral(
+        'ramanid',
+        'ramon.peck@example.com',
+        'https://randomuser.me/api/portraits/men/6.jpg',
+        'I like chocolate ice-cream.',
+        'Ramon');
+    UserGeneral friend3 = new UserGeneral(
+        'rossalinda',
+        'ross.bryant@example.com',
+        'https://randomuser.me/api/portraits/women/99.jpg',
+        'I like strawberry ice-cream.',
+        'Rossi');
+    UserGeneral friend4 = new UserGeneral(
+        'barretoo',
+        'leon.barrett@example.com',
+        'https://randomuser.me/api/portraits/men/62.jpg',
+        'I like cherry ice-cream.',
+        'Barret');
+    UserGeneral friend5 = new UserGeneral(
+        'pickle',
+        'ramon.peck@example.com',
+        'https://randomuser.me/api/portraits/women/85.jpg',
+        'I like vanilla ice-cream.',
+        'Pecky');
+    UserGeneral friend6 = new UserGeneral(
+        'bumblebee',
+        'ross.bryant@example.com',
+        'https://randomuser.me/api/portraits/men/47.jpg',
+        'I like ginger ice-cream.',
+        'Bryant');
+    listOfUsers.add(friend1);
+    listOfUsers.add(friend2);
+    listOfUsers.add(friend3);
+    listOfUsers.add(friend4);
+    listOfUsers.add(friend5);
+    listOfUsers.add(friend6);
+    widget.participants = listOfUsers;
+  }
+  //
+  //
+  //
 
   final StreamController<Set<Marker>> _streamController = StreamController();
   final StreamController<String> _streamControllerAddress = StreamController();
@@ -61,82 +139,96 @@ class _EventDetailState extends State<EventDetail> {
   Widget build(BuildContext context) {
     final arguments = ModalRoute.of(context)!.settings.arguments as List;
     widget.event = arguments[0] as EventMeeting;
-    widget.linkedGroup = arguments[1] as Group;
-    widget.userPassed = arguments[2] as User;
+    widget.userPassed = arguments[1] as User;
+    widget.token = arguments[2] as Token;
+    _hardcodeGroup();
+    _hardcodeListParticipants();
 
     return Scaffold(
-/*      appBar: MyAppBar(),*/
       appBar: AppBar(
-        title: Text(
-          'Event details',
-        ),
-      ),
+          leading: BackButton(
+            onPressed: () {
+              Navigator.pop(context);
+            },
+          ),
+          backgroundColor: kMainPurple,
+          title: Text(
+            widget.event.eventName,
+            style: TextStyle(fontSize: 20.0),
+          )),
       body: SafeArea(
-        minimum: EdgeInsets.all(20.0),
+        minimum: EdgeInsets.fromLTRB(20.0, 0, 20.0, 20.0),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: <Widget>[
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            TextButton(
+              onPressed: () {
+                Navigator.pushNamed(context, 'members_list', arguments: [
+                  widget.token,
+                  widget.userPassed,
+                  widget.participants,
+                  'Participants'
+                ]);
+              },
+              child: Row(
+                  mainAxisAlignment: MainAxisAlignment.end,
+                  children: <Widget>[
+                    Text(
+                      'Show participants',
+                      style: TextStyle(color: Colors.deepPurple),
+                    ),
+                    Icon(Icons.arrow_right, color: Colors.deepPurple),
+                  ]),
+            ),
+            Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text(
-                      widget.event.eventName,
-                      style: TextStyle(
-                          fontSize: 20.0, fontWeight: FontWeight.bold),
-                    ),
-                    SizedBox(
-                      height: 10.0,
-                    ),
-                    Text('Hangout time:'),
-                    Text(
-                      widget.event.time,
-                      style: TextStyle(
-                          fontSize: 15.0, fontWeight: FontWeight.bold),
-                    ),
-                    SizedBox(
-                      height: 10.0,
-                    ),
-                    Text('Location:'),
-                    StreamBuilder<String>(
-                        stream: _streamControllerAddress.stream,
-                        initialData: _address,
-                        builder: (context, snapshot) {
-                          return Text(
-                            _address,
-                            style: TextStyle(
-                                fontSize: 15.0, fontWeight: FontWeight.bold),
-                          );
-                        }),
-                    SizedBox(
-                      height: 10.0,
-                    ),
-                  ],
+                /*RichText(
+                    text: TextSpan(
+                        style: TextStyle(fontSize: 15.0, color: Colors.black),
+                        children: <TextSpan>[
+                      TextSpan(text: 'Time: '),
+                      TextSpan(
+                          text: widget.event.time,
+                          style: TextStyle(
+                              fontSize: 15.0, fontWeight: FontWeight.bold))
+                    ]),),*/
+                Text(
+                  widget.event.time,
+                  style: TextStyle(fontWeight: FontWeight.bold),
                 ),
-                Column(
-                  children: [
-                    TextButton(
-                      onPressed: () {
-                        // TODO show list of participants
-                      },
-                      child: Text('Participants'),
-                    ),
-                    TextButton(
-                      onPressed: () {
-                        // TODO add event to your event list
-                      },
-                      child: Text(
-                        'Join event',
-                      ),
-                    ),
-                  ],
+                StreamBuilder<String>(
+                    stream: _streamControllerAddress.stream,
+                    initialData: _address,
+                    builder: (context, snapshot) {
+                      return Text(
+                        _address,
+                        style: TextStyle(
+                            fontSize: 15.0, fontWeight: FontWeight.bold),
+                      );
+                    }),
+                SizedBox(
+                  height: 10.0,
+                ),
+                TextButton(
+                  onPressed: () {
+                    // TODO join event and rebuild
+                  },
+                  child: Text(
+                    'Join event',
+                    style: TextStyle(color: Colors.white),
+                  ),
+                  style: kFilledButtonStyle,
+                ),
+                SizedBox(
+                  height: 10.0,
                 ),
               ],
             ),
             ListTile(
               tileColor: Colors.grey.shade300,
+              shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(15.0)),
               contentPadding: EdgeInsets.all(10.0),
               leading: CircleAvatar(
                 radius: 30.0,
@@ -149,11 +241,17 @@ class _EventDetailState extends State<EventDetail> {
               ),
               trailing: Padding(
                 padding: const EdgeInsets.all(8.0),
-                child: Icon(Icons.chat),
+                child: Icon(
+                  Icons.chat,
+                  color: Colors.deepPurple,
+                ),
               ),
               onTap: () {
-                Navigator.pushNamed(context, 'group_detail',
-                    arguments: [widget.linkedGroup, widget.userPassed]);
+                Navigator.pushNamed(context, 'group_detail', arguments: [
+                  widget.token,
+                  widget.userPassed,
+                  widget.linkedGroup
+                ]);
               },
             ),
             SizedBox(

@@ -6,7 +6,7 @@ import 'package:meet_up_vor_2/api/models/User.dart';
 import 'package:meet_up_vor_2/api/providers/LoginProvider.dart';
 import 'package:meet_up_vor_2/screens/screen_settings.dart';
 import 'package:meet_up_vor_2/constants.dart';
-import 'package:meet_up_vor_2/screens/screen_detail_user_profile.dart';
+import 'package:meet_up_vor_2/screens/screen_user_profile.dart';
 import 'package:meet_up_vor_2/api/api_client.dart';
 import 'package:http/http.dart' as http;
 
@@ -36,7 +36,7 @@ class MyAppBar extends StatelessWidget implements PreferredSizeWidget {
         });
         if (response.statusCode == 200) {
           String jsonsDataString = response.body.toString();
-          print('FEEDBACK - JSON status code 200, data string: ' +
+          print('FEEDBACK appbar - JSON status code 200, data string: ' +
               jsonDecode(jsonsDataString).toString());
           userFuture = User.fromJson(json.decode(response.body.toString()));
         }

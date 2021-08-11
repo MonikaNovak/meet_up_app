@@ -12,6 +12,8 @@ import 'package:meet_up_vor_2/api/api_client.dart';
 import '../constants.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 
+import '../main.dart';
+
 /// from database:
 /// list of friends
 
@@ -31,17 +33,53 @@ class FriendListPage extends StatefulWidget {
 class _FriendListPageState extends State<FriendListPage> {
   Future<User> _getUser(Token token) async {
     var userFuture;
+    String tokenString = token.token;
     if (token.token == '123456789') {
       userFuture =
           await LoginProvider(Client().init()).getUserLocalJson() as User;
     } else {
-      // TODO get user from database
+      try {
+        final response = await http
+            .get(Uri.parse('http://ccproject.robertdoes.it/users'), headers: {
+          "Content-Type": "application/json",
+          "Charset": "utf-8",
+          "Accept": "application/json",
+          "Authorization": "Bearer $tokenString",
+        });
+        if (response.statusCode == 200) {
+          String jsonsDataString = response.body.toString();
+          print('FEEDBACK friendpage - JSON status code 200, data string: ' +
+              jsonDecode(jsonsDataString).toString());
+          userFuture = User.fromJson(json.decode(response.body.toString()));
+        }
+      } catch (err, stack) {
+        logger.e("Login failed...", err, stack);
+        throw err;
+      }
     }
     return userFuture;
   }
 
-  void _defineUser() async {
-    widget.userFinal = await _getUser(widget.token);
+  void _getFriendsFromDatabase(Token token) async {
+    var listOfFriends;
+    String tokenString = token.token;
+    try {
+      final response = await http
+          .get(Uri.parse('http://ccproject.robertdoes.it/friends'), headers: {
+        "Content-Type": "application/json",
+        "Charset": "utf-8",
+        "Accept": "application/json",
+        "Authorization": "Bearer $tokenString",
+      });
+      if (response.statusCode == 200) {
+        String jsonsDataString = response.body.toString();
+        print('FEEDBACK - JSON status code 200, list of friends: ' +
+            jsonDecode(jsonsDataString).toString());
+      }
+    } catch (err, stack) {
+      logger.e("Login failed...", err, stack);
+      throw err;
+    }
   }
 
   //
@@ -49,6 +87,7 @@ class _FriendListPageState extends State<FriendListPage> {
   // hardcoded lists:
   List<Friend> _hardcodeListOfFriends() {
     List<Friend> listOfFriends = new List.empty(growable: true);
+    // status 0 = pending, 1 = accepted, 2 = declined or no action yet - is actually necessary?, 3 = waiting for accept or decline
     Friend friend1 = new Friend(
         'leonido24',
         'leon.barrett@example.com',
@@ -62,9 +101,41 @@ class _FriendListPageState extends State<FriendListPage> {
         'https://randomuser.me/api/portraits/men/6.jpg',
         'I like chocolate ice-cream.',
         'Ramon',
+        0);
+    Friend friend3 = new Friend(
+        'rossalinda',
+        'ross.bryant@example.com',
+        'https://randomuser.me/api/portraits/women/99.jpg',
+        'I like strawberry ice-cream.',
+        'Rossi',
         1);
+    Friend friend4 = new Friend(
+        'barretoo',
+        'leon.barrett@example.com',
+        'https://randomuser.me/api/portraits/men/62.jpg',
+        'I like cherry ice-cream.',
+        'Barret',
+        1);
+    Friend friend5 = new Friend(
+        'pickle',
+        'ramon.peck@example.com',
+        'https://randomuser.me/api/portraits/women/85.jpg',
+        'I like vanilla ice-cream.',
+        'Pecky',
+        1);
+    Friend friend6 = new Friend(
+        'bumblebee',
+        'ross.bryant@example.com',
+        'https://randomuser.me/api/portraits/men/47.jpg',
+        'I like ginger ice-cream.',
+        'Bryant',
+        3);
     listOfFriends.add(friend1);
     listOfFriends.add(friend2);
+    listOfFriends.add(friend3);
+    listOfFriends.add(friend4);
+    listOfFriends.add(friend5);
+    listOfFriends.add(friend6);
     return listOfFriends;
   }
   //
@@ -86,7 +157,6 @@ class _FriendListPageState extends State<FriendListPage> {
 
   @override
   Widget build(BuildContext context) {
-    _defineUser();
     bool isSearching = searchController.text.isNotEmpty;
     return FutureBuilder<User>(
       future: _getUser(widget.token),
@@ -102,12 +172,12 @@ class _FriendListPageState extends State<FriendListPage> {
             if (snapshot.hasError)
               return Text('Error: ${snapshot.error}');
             else {
-              print('feedback - build friends page in build, user: ' +
-                  widget.userFinal.name);
+              // widget.userFinal = snapshot.data as User;
               _buildList();
               searchController.addListener(() {
                 filterFriends();
               });
+              _getFriendsFromDatabase(widget.token);
               return _buildWidget(isSearching);
             }
         }
@@ -116,29 +186,25 @@ class _FriendListPageState extends State<FriendListPage> {
   }
 
   Widget _buildWidget(bool isSearching) {
-    print('feedback - rebuilding whole buildWidget (including search bar)');
+    print(
+        'feedback friendlistpage - rebuilding whole buildWidget (including search bar)');
     return Scaffold(
       body: Column(
         children: <Widget>[
-          Row(
-            mainAxisAlignment: MainAxisAlignment.end,
-            children: [
-              TextButton(
-                onPressed: () {
-                  Navigator.pushNamed(context, 'pending_requests',
-                      arguments: _listOfFriendsPending);
-                },
-                child: Text(
-                  'Pending requests',
-                  style: TextStyle(color: Colors.deepPurple),
-                ),
-                /*style: TextButton.styleFrom(
-                  padding: EdgeInsets.all(0),
-                  minimumSize: Size.zero,
-                ),*/
-              ),
-              Icon(Icons.arrow_right, color: Colors.deepPurple),
-            ],
+          TextButton(
+            onPressed: () {
+              Navigator.pushNamed(context, 'pending_requests',
+                  arguments: [_listOfFriendsPending, widget.token]);
+            },
+            child: Row(
+                mainAxisAlignment: MainAxisAlignment.end,
+                children: <Widget>[
+                  Text(
+                    'Pending requests',
+                    style: TextStyle(color: Colors.deepPurple),
+                  ),
+                  Icon(Icons.arrow_right, color: Colors.deepPurple),
+                ]),
           ),
           Padding(
             padding: const EdgeInsets.fromLTRB(8.0, 0, 8.0, 8.0),
@@ -204,37 +270,52 @@ class _FriendListPageState extends State<FriendListPage> {
       subtitle: new Text(friend.statusMessage),
       onTap: () {
         Navigator.pushNamed(context, 'friend_profile', arguments: [
+          widget.token,
+          friend,
+        ]);
+        /*Navigator.pushNamed(context, 'friend_profile', arguments: [
           friend.profileImageUrl,
           friend.name,
           friend.displayName,
           friend.statusMessage,
           widget.token,
           false // friendToAdd
-        ]);
+        ]);*/
       },
     );
   }
 
   _buildList() async {
+    List<Friend> listOfFriendsAll = new List.empty(growable: true);
     List<Friend> listOfFriends = new List.empty(growable: true);
+    List<Friend> listOfFriendsPending = new List.empty(growable: true);
     try {
-      listOfFriends = widget.userFinal.friends;
+      // listOfFriends = widget.userFinal.friends;
+      listOfFriendsAll = _hardcodeListOfFriends();
     } catch (exception) {
       print(exception.toString());
     }
 
-    print('feedback - fetch friend list complete');
-    _listOfFriends = listOfFriends;
-    _listOfFriendsFiltered = listOfFriends;
-    _isProgressBarShown = false;
-
-    List<Friend> listOfFriendsPending = new List.empty(growable: true);
-    _listOfFriends.forEach((element) {
+    // print('feedback - fetch friend list complete');
+    // _listOfFriends = listOfFriends;
+    listOfFriendsAll.forEach((element) {
       if (element.status == 1) {
+        listOfFriends.add(element);
+      } else if (element.status == 0 || element.status == 3) {
         listOfFriendsPending.add(element);
       }
     });
+    _listOfFriends = listOfFriends;
     _listOfFriendsPending = listOfFriendsPending;
+    _listOfFriendsFiltered = listOfFriends;
+    _isProgressBarShown = false;
+
+    /*_listOfFriends.forEach((element) {
+      if (element.status == 0) {
+        listOfFriendsPending.add(element);
+      }
+    });
+    _listOfFriendsPending = listOfFriendsPending;*/
   }
 
   filterFriends() {

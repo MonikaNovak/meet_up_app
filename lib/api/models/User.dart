@@ -1,6 +1,4 @@
 import 'Friend.dart';
-import 'Group.dart';
-import 'EventMeeting.dart';
 
 class User {
   final String name;
@@ -36,6 +34,6 @@ class User {
         statusMessage = json['statusMessage'],
         id = json["_id"],
         friends = (json['friendslist'] as List<dynamic>)
-            .map((e) => Friend.fromJson(e))
+            .map((e) => Friend.fromJsonLocal(e))
             .toList();
 }

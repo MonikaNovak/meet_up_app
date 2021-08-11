@@ -9,9 +9,17 @@ class Friend {
   const Friend(this.name, this.email, this.profileImageUrl, this.statusMessage,
       this.displayName, this.status);
 
-  Friend.fromJson(Map<String, dynamic> json)
+  Friend.fromJsonLocal(Map<String, dynamic> json)
       : name = json['name'],
         profileImageUrl = json['profilImage'],
+        email = json['email'],
+        displayName = json['displayName'],
+        statusMessage = json['statusMessage'],
+        status = json['status'];
+
+  Friend.fromJson(Map<String, dynamic> json) // TODO correct data?
+      : name = json['userName'],
+        profileImageUrl = json['profilePicUrl'],
         email = json['email'],
         displayName = json['displayName'],
         statusMessage = json['statusMessage'],

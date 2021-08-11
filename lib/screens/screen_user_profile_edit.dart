@@ -1,9 +1,13 @@
+import 'dart:convert';
+
 import 'package:email_validator/email_validator.dart';
 import 'package:flutter/material.dart';
 import 'package:meet_up_vor_2/api/models/Token.dart';
 import 'package:meet_up_vor_2/api/models/User.dart';
+import 'package:http/http.dart' as http;
 
 import '../constants.dart';
+import '../main.dart';
 
 class EditProfile extends StatefulWidget {
   late final Token token;
@@ -25,6 +29,37 @@ class _EditProfileState extends State<EditProfile> {
   final GlobalKey<FormState> _formKey3 = GlobalKey<FormState>();
   final GlobalKey<FormState> _formKey4 = GlobalKey<FormState>();
   final GlobalKey<FormState> _formKeySubmit = GlobalKey<FormState>();
+
+  void _updateUserData(Token token) async {
+    print('running update user data: ' +
+        displayName +
+        emailAddress +
+        statusMessage);
+    String tokenString = token.token;
+    try {
+      final response = await http.put(
+          Uri.parse(
+              'http://ccproject.robertdoes.it/users'), //TODO which is the right route and way to write .put request?
+          headers: {
+            // get right route
+            "Content-Type": "application/json",
+            "Charset": "utf-8",
+            "Accept": "application/json",
+            "Authorization": "Bearer $tokenString",
+          },
+          body: jsonEncode({
+            'displayName': displayName,
+            'email': emailAddress,
+            'statusMessage': statusMessage,
+          }));
+      if (response.statusCode == 200) {
+        print('profile data updated succesfully, I guess');
+      }
+    } catch (err, stack) {
+      logger.e("Login failed...", err, stack);
+      throw err;
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -54,7 +89,7 @@ class _EditProfileState extends State<EditProfile> {
         backgroundColor: Colors.deepPurple,
         title: Text(
           'Update profile data',
-          style: TextStyle(fontSize: 15.0),
+          style: TextStyle(fontSize: 20.0),
         ),
       ),
       body: Padding(
@@ -81,7 +116,13 @@ class _EditProfileState extends State<EditProfile> {
                     }
                   },*/
                     maxLength: 20,
-                    onSaved: (value) => displayName = value!),
+                    onSaved: (value) {
+                      if (value!.length > 0) {
+                        displayName = value;
+                      }
+                    }
+                    // onSaved: (value) => displayName = value!),
+                    ),
               ),
               Text(
                 'Display name will be shown throughout the app, replacing user name.',
@@ -119,7 +160,9 @@ class _EditProfileState extends State<EditProfile> {
                   },
                   keyboardType: TextInputType.emailAddress,
                   onSaved: (String? value) {
-                    emailAddress = value!;
+                    if (value!.length > 0) {
+                      emailAddress = value;
+                    }
                   },
                 ),
               ),
@@ -139,7 +182,9 @@ class _EditProfileState extends State<EditProfile> {
                     border: OutlineInputBorder(),
                   ),
                   onSaved: (String? value) {
-                    statusMessage = value!;
+                    if (value!.length > 0) {
+                      statusMessage = value;
+                    }
                   },
                 ),
               ),
@@ -209,7 +254,7 @@ class _EditProfileState extends State<EditProfile> {
                     _formKey3.currentState!.save();
                     _formKey4.currentState!.save();
 
-                    //TODO here update user data
+                    _updateUserData(widget.token);
 
                     final message = 'Profile data updated';
                     final snackBar = SnackBar(

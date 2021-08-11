@@ -102,10 +102,10 @@ class _UserProfileScreenState extends State<UserProfileScreen> {
             Navigator.pop(context);
           },
         ),
-        backgroundColor: Colors.deepPurple,
+        backgroundColor: kMainPurple,
         title: Text(
           'Profile',
-          style: TextStyle(fontSize: 15.0),
+          style: TextStyle(fontSize: 20.0),
         ),
       ),
       body: SafeArea(

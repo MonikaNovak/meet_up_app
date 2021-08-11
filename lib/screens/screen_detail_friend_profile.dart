@@ -1,5 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:meet_up_vor_2/api/models/Friend.dart';
 import 'package:meet_up_vor_2/api/models/Token.dart';
 
 import '../constants.dart';
@@ -11,23 +12,14 @@ import '../constants.dart';
 
 class FriendProfileScreen extends StatelessWidget {
   late final Token token;
-  late final bool friendToAdd;
+  late final Friend friend;
   late final String buttonMessage;
-
-  void isFriendToAdd() {
-    if (friendToAdd) {
-      buttonMessage = 'Send friend request';
-    } else {
-      buttonMessage = 'Remove friend from friend list';
-    }
-  }
 
   @override
   Widget build(BuildContext context) {
     final arguments = ModalRoute.of(context)!.settings.arguments as List;
-    token = arguments[4];
-    friendToAdd = arguments[5];
-    isFriendToAdd();
+    token = arguments[0];
+    friend = arguments[1];
     return Scaffold(
       appBar: AppBar(
         leading: BackButton(
@@ -35,10 +27,10 @@ class FriendProfileScreen extends StatelessWidget {
             Navigator.pop(context);
           },
         ),
-        backgroundColor: Colors.deepPurple,
+        backgroundColor: kMainPurple,
         title: Text(
-          'Friend profile',
-          style: TextStyle(fontSize: 15.0),
+          'User profile',
+          style: TextStyle(fontSize: 20.0),
         ),
       ),
       body: SafeArea(
@@ -54,18 +46,18 @@ class FriendProfileScreen extends StatelessWidget {
                 children: <Widget>[
                   CircleAvatar(
                     radius: 50.0,
-                    backgroundImage: new NetworkImage(arguments[0]),
+                    backgroundImage: new NetworkImage(friend.profileImageUrl),
                   ),
                   SizedBox(width: 20.0),
                   Column(
                     children: <Widget>[
                       Text(
-                        arguments[2],
+                        friend.displayName,
                         style: TextStyle(
                             fontWeight: FontWeight.bold, fontSize: 24.0),
                       ),
                       Text(
-                        arguments[1],
+                        friend.name,
                       )
                     ],
                   ),
@@ -82,28 +74,63 @@ class FriendProfileScreen extends StatelessWidget {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: <Widget>[
                   Text('status'),
-                  Text(arguments[3]),
+                  Text(friend.statusMessage),
                 ],
               ),
             ),
             SizedBox(
               height: 20.0,
             ),
-            TextButton(
-              onPressed: () {
-                if (friendToAdd) {
-                  // TODO request add friend to list (with token)
-                } else {
-                  // TODO request remove friend from list (with token)
-                }
-                ;
-              },
-              child: Text(buttonMessage),
-            ),
+            _buildLastWidget(),
           ],
         ),
       ),
     );
+  }
+
+  Widget _buildLastWidget() {
+    Widget widget = SizedBox(
+      height: 0,
+    );
+    int statusTemp = 0;
+    if (friend.status == 4) {
+      // TODO check if in friend list and update status
+      statusTemp = 2; // for now just as not in friend list
+    } else {
+      statusTemp = friend.status;
+    }
+    if (statusTemp == 1) {
+      widget = TextButton(
+        onPressed: () {
+          // TODO request remove friend from list (with token)
+        },
+        child: Text('Remove friend from friend list'),
+      );
+    } else if (statusTemp == 0) {
+      widget = Text(
+        'Friend request sent',
+        style: TextStyle(fontStyle: FontStyle.italic, color: Colors.lightGreen),
+      );
+    } else if (statusTemp == 3) {
+      widget = Row(
+        children: <Widget>[
+          TextButton(
+              onPressed: () {
+                // TODO add to friend list
+              },
+              child: Text('Accept friend request')),
+          TextButton(onPressed: () {}, child: Text('Decline friend request')),
+        ],
+      );
+    } else if (statusTemp == 2) {
+      widget = TextButton(
+        onPressed: () {
+          // TODO send friend request
+        },
+        child: Text('Send friend request'),
+      );
+    }
+    return widget;
   }
 }
 

@@ -71,12 +71,12 @@ class _MainScreenState extends State<MainScreen> {
               ),
               BottomNavigationBarItem(
                   icon: Icon(
-                    Icons.people,
+                    Icons.contacts,
                   ),
                   label: 'friends'),
               BottomNavigationBarItem(
                   icon: Icon(
-                    Icons.wc,
+                    Icons.people,
                   ),
                   label: 'groups'),
               BottomNavigationBarItem(

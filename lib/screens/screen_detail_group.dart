@@ -4,6 +4,8 @@ import 'package:meet_up_vor_2/api/models/Group.dart';
 import 'package:meet_up_vor_2/api/models/Token.dart';
 import 'package:meet_up_vor_2/api/models/User.dart';
 
+import '../constants.dart';
+
 /// from database:
 /// group:
 /// info - name
@@ -13,9 +15,10 @@ import 'package:meet_up_vor_2/api/models/User.dart';
 /// later group messenger
 
 class GroupDetail extends StatefulWidget {
-  // late final Token token;
   late final User userPassed;
   late final Group group;
+  late final Token token;
+  late final String admin;
 
   @override
   _GroupDetailState createState() => _GroupDetailState();
@@ -29,8 +32,10 @@ class _GroupDetailState extends State<GroupDetail> {
   @override
   Widget build(BuildContext context) {
     final arguments = ModalRoute.of(context)!.settings.arguments as List;
-    widget.group = arguments[0] as Group;
+    widget.token = arguments[0] as Token;
+    widget.group = arguments[2] as Group;
     widget.userPassed = arguments[1] as User;
+    widget.admin = 'Mihai Sandoval';
     _buildEventList();
     return Scaffold(
       appBar: AppBar(
@@ -39,70 +44,78 @@ class _GroupDetailState extends State<GroupDetail> {
             Navigator.pop(context);
           },
         ),
-        backgroundColor: Colors.deepPurple,
-        title: Text(
-          'Group details',
+        backgroundColor: kMainPurple,
+        title: Row(
+          children: <Widget>[
+            CircleAvatar(
+              radius: 15.0,
+              backgroundImage: new NetworkImage(widget.group.groupImageUrl),
+            ),
+            SizedBox(
+              width: 10.0,
+            ),
+            Text(
+              widget.group.groupName,
+              style: TextStyle(fontSize: 20.0),
+            ),
+          ],
         ),
+        /*actions: [
+          PopupMenuButton(
+              icon: Icon(Icons.more_vert),
+              itemBuilder: (context) =>
+                  [PopupMenuItem<int>(value: 0, child: Text('Leave group'))],
+              onSelected: (item) => {_showAlertDialog(context)})
+        ],*/
+        actions: [_buildPopUpMenu()],
       ),
       body: SafeArea(
-        minimum: EdgeInsets.all(20.0),
+        minimum: EdgeInsets.fromLTRB(15.0, 0, 15.0, 15.0),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: <Widget>[
-            Container(
-              padding: EdgeInsets.all(10.0),
-              color: Colors.grey.shade300,
+            TextButton(
+              onPressed: () {
+                Navigator.pushNamed(context, 'members_list', arguments: [
+                  widget.token,
+                  widget.userPassed,
+                  widget.group.members,
+                  'Members'
+                ]);
+              },
               child: Row(
-                children: <Widget>[
-                  CircleAvatar(
-                    radius: 30.0,
-                    /*backgroundImage: AssetImage(kUserProfilePicAddress),*/
-                    backgroundImage:
-                        new NetworkImage(widget.group.groupImageUrl),
-                  ),
-                  SizedBox(width: 20.0),
-                  Text(
-                    widget.group.groupName,
-                    style:
-                        TextStyle(fontWeight: FontWeight.bold, fontSize: 24.0),
-                  ),
-                ],
+                  mainAxisAlignment: MainAxisAlignment.end,
+                  children: <Widget>[
+                    Text(
+                      'Show members',
+                      style: TextStyle(color: Colors.deepPurple),
+                    ),
+                    Icon(Icons.arrow_right, color: Colors.deepPurple),
+                  ]),
+            ),
+            Align(
+              alignment: Alignment.centerLeft,
+              child: Text(
+                'Upcoming events:',
+                textAlign: TextAlign.left,
+                style: kTextStyleItalic,
               ),
             ),
             SizedBox(
               height: 10.0,
             ),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: <Widget>[
-                TextButton(
-                  child: Text(
-                    'Show members',
-                  ),
-                  onPressed: () {
-                    Navigator.pushNamed(context, 'group_members',
-                        arguments: widget.userPassed);
-                  },
-                ),
-                TextButton(
-                  child: Text(
-                    'Leave group',
-                  ),
-                  onPressed: () {
-                    _showAlertDialog(context);
-                  },
-                ),
-              ],
-            ),
             Expanded(
-              child: ListView.separated(
-                separatorBuilder: (context, index) => Divider(),
-                shrinkWrap: true,
-                padding: const EdgeInsets.all(0.0),
-                itemCount: _listOfEvents.length,
-                itemBuilder: (context, i) {
-                  return _buildRow(_listOfEvents[i]);
-                },
+              child: Container(
+                decoration: kContainerBoxDecoration,
+                child: ListView.separated(
+                  separatorBuilder: (context, index) => Divider(),
+                  shrinkWrap: true,
+                  padding: const EdgeInsets.all(0.0),
+                  itemCount: _listOfEvents.length,
+                  itemBuilder: (context, i) {
+                    return _buildRow(_listOfEvents[i]);
+                  },
+                ),
               ),
             ),
             SizedBox(
@@ -141,6 +154,24 @@ class _GroupDetailState extends State<GroupDetail> {
     );
   }
 
+  Widget _buildPopUpMenu() {
+    if (widget.admin == widget.userPassed.name) {
+      return PopupMenuButton(
+          icon: Icon(Icons.more_vert),
+          itemBuilder: (context) => [
+                PopupMenuItem<int>(value: 0, child: Text('Delete group')),
+                PopupMenuItem<int>(value: 1, child: Text('Add friends'))
+              ],
+          onSelected: (value) => {_popUpMenuOptionsAdmin(value)});
+    } else {
+      return PopupMenuButton(
+          icon: Icon(Icons.more_vert),
+          itemBuilder: (context) =>
+              [PopupMenuItem<int>(value: 0, child: Text('Leave group'))],
+          onSelected: (item) => {_showAlertDialogLeaveGroup(context)});
+    }
+  }
+
   Widget _buildRow(EventMeeting event) {
     return new ListTile(
       leading: new CircleAvatar(
@@ -153,7 +184,7 @@ class _GroupDetailState extends State<GroupDetail> {
           new Text('Time: ' + event.time + '\nLocation: ' + 'event.location'),
       onTap: () {
         Navigator.pushNamed(context, 'event_detail',
-            arguments: [event, widget.group, widget.userPassed]);
+            arguments: [event, widget.userPassed, widget.token]);
       },
     );
   }
@@ -170,7 +201,47 @@ class _GroupDetailState extends State<GroupDetail> {
     _listOfEvents = listOfEvents;
   }
 
-  _showAlertDialog(BuildContext context) {
+  _popUpMenuOptionsAdmin(Object? value) {
+    if (value.toString() == '0') {
+      // TODO add friends to group
+    } else if (value.toString() == '1') {
+      _showAlertDialogDeleteGroup(context);
+    }
+  }
+
+  _showAlertDialogDeleteGroup(BuildContext context) {
+    Widget cancelButton = TextButton(
+      child: Text("Cancel"),
+      onPressed: () {
+        Navigator.of(context).pop();
+      },
+    );
+    Widget confirmButton = TextButton(
+      child: Text("Delete group"),
+      onPressed: () {
+        // TODO leave group function
+      },
+    );
+
+    AlertDialog alert = AlertDialog(
+      title: Text("Are you sure you want to delete this group?"),
+      content:
+          Text("All events creazed within the group will be deleted as well."),
+      actions: [
+        cancelButton,
+        confirmButton,
+      ],
+    );
+
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return alert;
+      },
+    );
+  }
+
+  _showAlertDialogLeaveGroup(BuildContext context) {
     Widget cancelButton = TextButton(
       child: Text("Cancel"),
       onPressed: () {
