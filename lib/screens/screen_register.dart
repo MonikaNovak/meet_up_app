@@ -12,7 +12,7 @@ class RegisterScreen extends StatefulWidget {
 class _RegisterScreenState extends State<RegisterScreen> {
   //
   // USE LOCAL OR REST API: 0 for local, 1 for api
-  int useApi = 1;
+  int useApi = 0;
   //
   //
 
@@ -77,7 +77,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
                 key: _formKey1,
                 autovalidateMode: AutovalidateMode.onUserInteraction,
                 child: TextFormField(
-                  initialValue: 'theUser', // for testing
+                  // initialValue: 'Mihai Sandoval', // for testing
                   decoration: InputDecoration(
                     isDense: true,
                     labelText: 'Username',
@@ -107,7 +107,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
                 key: _formKey2,
                 autovalidateMode: AutovalidateMode.onUserInteraction,
                 child: TextFormField(
-                  initialValue: 'email@email.com', // for testing
+                  // initialValue: 'mihaisandoval@email.com', // for testing
                   decoration: const InputDecoration(
                     isDense: true,
                     /*icon: Icon(Icons.email),*/
@@ -138,7 +138,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
                 key: _formKey3,
                 autovalidateMode: AutovalidateMode.onUserInteraction,
                 child: TextFormField(
-                  initialValue: 'Password1!', // for testing
+                  // initialValue: 'Password1!', // for testing
                   decoration: InputDecoration(
                     isDense: true,
                     labelText: 'Password',
@@ -163,7 +163,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
                 key: _formKey4,
                 autovalidateMode: AutovalidateMode.onUserInteraction,
                 child: TextFormField(
-                  initialValue: 'Password1!', // for testing
+                  // initialValue: 'Password1!', // for testing
                   decoration: InputDecoration(
                     isDense: true,
                     labelText: 'Confirm password',

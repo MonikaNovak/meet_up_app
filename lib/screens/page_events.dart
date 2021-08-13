@@ -2,7 +2,9 @@ import 'dart:async';
 import 'dart:convert';
 
 import 'package:flutter/material.dart';
+import 'package:geocoding/geocoding.dart';
 import 'package:meet_up_vor_2/api/models/EventMeeting.dart';
+import 'package:meet_up_vor_2/api/models/EventMeetingAddress.dart';
 import 'package:meet_up_vor_2/api/models/Group.dart';
 import 'package:meet_up_vor_2/api/models/Token.dart';
 import 'package:meet_up_vor_2/api/api_client.dart';
@@ -10,6 +12,7 @@ import 'package:meet_up_vor_2/api/models/User.dart';
 import 'package:meet_up_vor_2/api/models/UserGeneral.dart';
 import 'package:meet_up_vor_2/api/providers/LoginProvider.dart';
 import 'package:http/http.dart' as http;
+import 'package:meet_up_vor_2/api/providers/lists.dart';
 
 import '../main.dart';
 
@@ -56,25 +59,8 @@ class _EventPageState extends State<EventPage> {
     return userFuture;
   }
 
-  //
-  //
-  // hardcoded lists:
   List<EventMeeting> _hardcodeListOfEvents() {
-    List<EventMeeting> listOfEvents = new List.empty(growable: true);
-    EventMeeting event1 = new EventMeeting('aaa', 47.23962176969944,
-        9.597157658181816, 'Gin degustation', 'Fr 2.7.2021');
-    EventMeeting event2 = new EventMeeting('bbb', 47.23962176969944,
-        9.597157658181816, 'Whiskey degustation', 'Fr 9.7.2021');
-    EventMeeting event3 = new EventMeeting('ccc', 47.23962176969944,
-        9.597157658181816, 'Beer degustation', 'Fr 16.7.2021');
-    listOfEvents.add(event1);
-    listOfEvents.add(event2);
-    listOfEvents.add(event3);
-    print('feedback - list of events hardcoded: ' +
-        listOfEvents[0].eventName +
-        listOfEvents[1].eventName +
-        listOfEvents[2].eventName);
-    return listOfEvents;
+    return Lists().hardcodeListOfEvents1();
   }
 
   final _biggerFont = const TextStyle(fontSize: 18.0);
@@ -163,7 +149,6 @@ class _EventPageState extends State<EventPage> {
       print(exception.toString());
     }
 
-    print('feedback - groups page - fetch friend list complete');
     _listOfEvents = listOfEvents;
     _listOfEventsFiltered = listOfEvents;
   }

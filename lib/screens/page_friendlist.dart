@@ -2,6 +2,7 @@ import 'dart:async';
 import 'dart:convert';
 import 'dart:io';
 import 'dart:ui';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'package:meet_up_vor_2/api/models/Friend.dart';
@@ -9,6 +10,7 @@ import 'package:meet_up_vor_2/api/models/Token.dart';
 import 'package:meet_up_vor_2/api/models/User.dart';
 import 'package:meet_up_vor_2/api/providers/LoginProvider.dart';
 import 'package:meet_up_vor_2/api/api_client.dart';
+import 'package:meet_up_vor_2/api/providers/lists.dart';
 import '../constants.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 
@@ -82,66 +84,6 @@ class _FriendListPageState extends State<FriendListPage> {
     }
   }
 
-  //
-  //
-  // hardcoded lists:
-  List<Friend> _hardcodeListOfFriends() {
-    List<Friend> listOfFriends = new List.empty(growable: true);
-    // status 0 = pending, 1 = accepted, 2 = declined or no action yet - is actually necessary?, 3 = waiting for accept or decline
-    Friend friend1 = new Friend(
-        'leonido24',
-        'leon.barrett@example.com',
-        'https://randomuser.me/api/portraits/men/29.jpg',
-        'I like lemon ice-cream.',
-        'Leon',
-        0);
-    Friend friend2 = new Friend(
-        'ramanid',
-        'ramon.peck@example.com',
-        'https://randomuser.me/api/portraits/men/6.jpg',
-        'I like chocolate ice-cream.',
-        'Ramon',
-        0);
-    Friend friend3 = new Friend(
-        'rossalinda',
-        'ross.bryant@example.com',
-        'https://randomuser.me/api/portraits/women/99.jpg',
-        'I like strawberry ice-cream.',
-        'Rossi',
-        1);
-    Friend friend4 = new Friend(
-        'barretoo',
-        'leon.barrett@example.com',
-        'https://randomuser.me/api/portraits/men/62.jpg',
-        'I like cherry ice-cream.',
-        'Barret',
-        1);
-    Friend friend5 = new Friend(
-        'pickle',
-        'ramon.peck@example.com',
-        'https://randomuser.me/api/portraits/women/85.jpg',
-        'I like vanilla ice-cream.',
-        'Pecky',
-        1);
-    Friend friend6 = new Friend(
-        'bumblebee',
-        'ross.bryant@example.com',
-        'https://randomuser.me/api/portraits/men/47.jpg',
-        'I like ginger ice-cream.',
-        'Bryant',
-        3);
-    listOfFriends.add(friend1);
-    listOfFriends.add(friend2);
-    listOfFriends.add(friend3);
-    listOfFriends.add(friend4);
-    listOfFriends.add(friend5);
-    listOfFriends.add(friend6);
-    return listOfFriends;
-  }
-  //
-  //
-  //
-
   //friend list data
   bool _isProgressBarShown = true;
   final _biggerFont = const TextStyle(fontSize: 18.0);
@@ -191,20 +133,25 @@ class _FriendListPageState extends State<FriendListPage> {
     return Scaffold(
       body: Column(
         children: <Widget>[
-          TextButton(
-            onPressed: () {
-              Navigator.pushNamed(context, 'pending_requests',
-                  arguments: [_listOfFriendsPending, widget.token]);
-            },
-            child: Row(
-                mainAxisAlignment: MainAxisAlignment.end,
-                children: <Widget>[
-                  Text(
-                    'Pending requests',
-                    style: TextStyle(color: Colors.deepPurple),
-                  ),
-                  Icon(Icons.arrow_right, color: Colors.deepPurple),
-                ]),
+          Row(
+            children: [
+              Expanded(child: SizedBox()),
+              TextButton(
+                onPressed: () {
+                  Navigator.pushNamed(context, 'pending_requests',
+                      arguments: [_listOfFriendsPending, widget.token]);
+                },
+                child: Row(
+                    mainAxisAlignment: MainAxisAlignment.end,
+                    children: <Widget>[
+                      Text(
+                        'Pending requests',
+                        style: TextStyle(color: Colors.deepPurple),
+                      ),
+                      Icon(Icons.arrow_right, color: Colors.deepPurple),
+                    ]),
+              ),
+            ],
           ),
           Padding(
             padding: const EdgeInsets.fromLTRB(8.0, 0, 8.0, 8.0),
@@ -263,9 +210,19 @@ class _FriendListPageState extends State<FriendListPage> {
         // backgroundImage: CachedNetworkImageProvider(friend.profileImageUrl), TODO why is not working???
         backgroundImage: NetworkImage(friend.profileImageUrl),
       ),
-      title: new Text(
+      /*title: new Text(
         friend.displayName + ' (' + friend.name + ')',
         style: _biggerFont,
+      ),*/
+      title: RichText(
+        text: TextSpan(
+            style: TextStyle(fontSize: 15.0, color: Colors.black),
+            children: <TextSpan>[
+              TextSpan(text: friend.displayName + ' '),
+              TextSpan(
+                  text: '(' + friend.name + ')',
+                  style: TextStyle(fontSize: 15.0, fontStyle: FontStyle.italic))
+            ]),
       ),
       subtitle: new Text(friend.statusMessage),
       onTap: () {
@@ -291,7 +248,7 @@ class _FriendListPageState extends State<FriendListPage> {
     List<Friend> listOfFriendsPending = new List.empty(growable: true);
     try {
       // listOfFriends = widget.userFinal.friends;
-      listOfFriendsAll = _hardcodeListOfFriends();
+      listOfFriendsAll = Lists().hardcodeListOfFriends(); // local friend list
     } catch (exception) {
       print(exception.toString());
     }

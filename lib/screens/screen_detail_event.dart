@@ -8,6 +8,7 @@ import 'package:geocoding/geocoding.dart';
 import 'package:meet_up_vor_2/api/models/Token.dart';
 import 'package:meet_up_vor_2/api/models/User.dart';
 import 'package:meet_up_vor_2/api/models/UserGeneral.dart';
+import 'package:meet_up_vor_2/api/providers/lists.dart';
 import '../constants.dart';
 
 /// from database:
@@ -36,7 +37,8 @@ class _EventDetailState extends State<EventDetail> {
     _markers.add(
       Marker(
         markerId: MarkerId('id-1'),
-        position: LatLng(47.23962176969944, 9.597157658181816),
+        // position: LatLng(47.23962176969944, 9.597157658181816),
+        position: LatLng(widget.event.lat, widget.event.long),
         infoWindow: InfoWindow(
           title: widget.event.eventName,
           snippet: widget.event.time,
@@ -46,91 +48,22 @@ class _EventDetailState extends State<EventDetail> {
     _streamController.sink.add(_markers);
 
     List<Placemark> _placemarks =
-        await placemarkFromCoordinates(47.23962176969944, 9.597157658181816);
+        // await placemarkFromCoordinates(47.23962176969944, 9.597157658181816);
+        await placemarkFromCoordinates(widget.event.lat, widget.event.long);
     Placemark place = _placemarks[0];
     print(_placemarks.toString());
     print(place.toString());
     _address = '${place.street}, ${place.locality}, ${place.postalCode}';
     _streamControllerAddress.sink.add(_address);
-
-    // TODO update location
   }
 
-  //
-  //
-  //hardcoded
   void _hardcodeGroup() {
-    List<UserGeneral> listOfUsers = new List.empty(growable: true);
-    UserGeneral friend1 = new UserGeneral(
-        'leonido24',
-        'leon.barrett@example.com',
-        'https://randomuser.me/api/portraits/men/29.jpg',
-        'I like lemon ice-cream.',
-        'Leon');
-    listOfUsers.add(friend1);
-    List<EventMeeting> listOfEvents = new List.empty(growable: true);
-    EventMeeting event1 = new EventMeeting('aaa', 47.23962176969944,
-        9.597157658181816, 'Gin degustation', 'Fr 2.7.2021');
-    listOfEvents.add(event1);
-    widget.linkedGroup = new Group(
-        'monika.n',
-        'https://www.jolie.de/sites/default/files/styles/facebook/public/images/2017/07/14/partypeople.jpg?itok=H8Kltq60',
-        'The crazy people',
-        '1111',
-        listOfUsers,
-        listOfEvents);
+    widget.linkedGroup = Lists().hardcodeListOfGroups()[0];
   }
 
-  //list of participants:
   void _hardcodeListParticipants() {
-    List<UserGeneral> listOfUsers = new List.empty(growable: true);
-    UserGeneral friend1 = new UserGeneral(
-        'leonido24',
-        'leon.barrett@example.com',
-        'https://randomuser.me/api/portraits/men/29.jpg',
-        'I like lemon ice-cream.',
-        'Leon');
-    UserGeneral friend2 = new UserGeneral(
-        'ramanid',
-        'ramon.peck@example.com',
-        'https://randomuser.me/api/portraits/men/6.jpg',
-        'I like chocolate ice-cream.',
-        'Ramon');
-    UserGeneral friend3 = new UserGeneral(
-        'rossalinda',
-        'ross.bryant@example.com',
-        'https://randomuser.me/api/portraits/women/99.jpg',
-        'I like strawberry ice-cream.',
-        'Rossi');
-    UserGeneral friend4 = new UserGeneral(
-        'barretoo',
-        'leon.barrett@example.com',
-        'https://randomuser.me/api/portraits/men/62.jpg',
-        'I like cherry ice-cream.',
-        'Barret');
-    UserGeneral friend5 = new UserGeneral(
-        'pickle',
-        'ramon.peck@example.com',
-        'https://randomuser.me/api/portraits/women/85.jpg',
-        'I like vanilla ice-cream.',
-        'Pecky');
-    UserGeneral friend6 = new UserGeneral(
-        'bumblebee',
-        'ross.bryant@example.com',
-        'https://randomuser.me/api/portraits/men/47.jpg',
-        'I like ginger ice-cream.',
-        'Bryant');
-    listOfUsers.add(friend1);
-    listOfUsers.add(friend2);
-    listOfUsers.add(friend3);
-    listOfUsers.add(friend4);
-    listOfUsers.add(friend5);
-    listOfUsers.add(friend6);
-    widget.participants = listOfUsers;
+    widget.participants = Lists().hardcodeListOfUsers();
   }
-  //
-  //
-  //
 
   final StreamController<Set<Marker>> _streamController = StreamController();
   final StreamController<String> _streamControllerAddress = StreamController();
@@ -266,7 +199,7 @@ class _EventDetailState extends State<EventDetail> {
                       onMapCreated: _onMapCreated,
                       markers: _markers,
                       initialCameraPosition: CameraPosition(
-                          target: LatLng(47.23962176969944, 9.597157658181816),
+                          target: LatLng(widget.event.lat, widget.event.long),
                           zoom: 15),
                     ),
                   );

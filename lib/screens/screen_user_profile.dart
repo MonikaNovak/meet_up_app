@@ -82,7 +82,8 @@ class _UserProfileScreenState extends State<UserProfileScreen> {
         builder: (context, snapshot) {
           switch (snapshot.connectionState) {
             case ConnectionState.waiting:
-              return Text('loading...');
+              // return Text('loading...');
+              return Center(child: CircularProgressIndicator());
             default:
               if (snapshot.hasError)
                 return Text('Error: ${snapshot.error}');
@@ -115,8 +116,11 @@ class _UserProfileScreenState extends State<UserProfileScreen> {
             crossAxisAlignment: CrossAxisAlignment.stretch,
             children: <Widget>[
               Container(
+                decoration: BoxDecoration(
+                  color: Colors.grey.shade300,
+                  borderRadius: BorderRadius.all(Radius.circular(8.0)),
+                ),
                 padding: EdgeInsets.all(20.0),
-                color: Colors.grey.shade300,
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
@@ -179,8 +183,11 @@ class _UserProfileScreenState extends State<UserProfileScreen> {
                 height: 20.0,
               ),
               Container(
+                decoration: BoxDecoration(
+                  color: Colors.grey.shade300,
+                  borderRadius: BorderRadius.all(Radius.circular(8.0)),
+                ),
                 padding: EdgeInsets.all(10.0),
-                color: Colors.grey.shade300,
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
@@ -207,8 +214,11 @@ class _UserProfileScreenState extends State<UserProfileScreen> {
                 height: 20.0,
               ),
               Container(
+                decoration: BoxDecoration(
+                  color: Colors.grey.shade300,
+                  borderRadius: BorderRadius.all(Radius.circular(8.0)),
+                ),
                 padding: EdgeInsets.all(10.0),
-                color: Colors.grey.shade300,
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [

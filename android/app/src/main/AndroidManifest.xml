@@ -1,7 +1,7 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.example.meet_up_vor_2">
    <application
-        android:label="meet_up_vor_2"
+        android:label="Meet up"
         android:icon="@mipmap/ic_launcher">
        <meta-data android:name="com.google.android.geo.API_KEY" android:value="AIzaSyBtYcgi6RsyfO4DLbu12IuyD0UTLtRAzJQ"/>
         <activity

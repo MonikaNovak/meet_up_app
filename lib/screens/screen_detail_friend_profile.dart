@@ -1,5 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:meet_up_vor_2/api/models/Friend.dart';
 import 'package:meet_up_vor_2/api/models/Token.dart';
 
@@ -39,7 +40,42 @@ class FriendProfileScreen extends StatelessWidget {
           mainAxisAlignment: MainAxisAlignment.start,
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: <Widget>[
+            Center(
+              child: CircleAvatar(
+                radius: 50.0,
+                backgroundImage: NetworkImage(friend.profileImageUrl),
+              ),
+            ),
+            SizedBox(height: 10.0),
+            Center(
+              child: Text(
+                friend.displayName,
+                style: TextStyle(fontWeight: FontWeight.bold, fontSize: 24.0),
+              ),
+            ),
+            Center(
+              child: Text(
+                friend.name,
+                style: TextStyle(
+                  fontStyle: FontStyle.italic,
+                ),
+              ),
+            ),
+            SizedBox(height: 10.0),
             Container(
+              decoration: BoxDecoration(
+                color: Colors.grey.shade300,
+                borderRadius: BorderRadius.all(Radius.circular(8.0)),
+              ),
+              padding: EdgeInsets.all(10.0),
+              child: Center(
+                child: Text(
+                  '"' + friend.statusMessage + '"',
+                  style: TextStyle(fontSize: 15.0, fontStyle: FontStyle.italic),
+                ),
+              ),
+            ),
+            /*Container(
               padding: EdgeInsets.all(20.0),
               color: Colors.grey.shade300,
               child: Row(
@@ -63,11 +99,8 @@ class FriendProfileScreen extends StatelessWidget {
                   ),
                 ],
               ),
-            ),
-            SizedBox(
-              height: 20.0,
-            ),
-            Container(
+            ),*/
+            /*Container(
               padding: EdgeInsets.all(10.0),
               color: Colors.grey.shade300,
               child: Column(
@@ -77,7 +110,7 @@ class FriendProfileScreen extends StatelessWidget {
                   Text(friend.statusMessage),
                 ],
               ),
-            ),
+            ),*/
             SizedBox(
               height: 20.0,
             ),
@@ -100,34 +133,78 @@ class FriendProfileScreen extends StatelessWidget {
       statusTemp = friend.status;
     }
     if (statusTemp == 1) {
-      widget = TextButton(
-        onPressed: () {
-          // TODO request remove friend from list (with token)
-        },
-        child: Text('Remove friend from friend list'),
+      widget = Center(
+        child: TextButton(
+          style: kFilledButtonStyle,
+          onPressed: () {
+            // TODO request remove friend from list (with token)
+          },
+          child: Text('Remove friend from friend list',
+              style: TextStyle(color: Colors.white)),
+        ),
       );
     } else if (statusTemp == 0) {
-      widget = Text(
-        'Friend request sent',
-        style: TextStyle(fontStyle: FontStyle.italic, color: Colors.lightGreen),
+      widget = Center(
+        child: Text(
+          'Friend request sent',
+          style:
+              TextStyle(fontStyle: FontStyle.italic, color: Colors.lightGreen),
+        ),
       );
     } else if (statusTemp == 3) {
       widget = Row(
+        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
         children: <Widget>[
           TextButton(
+              style: ButtonStyle(
+                padding: MaterialStateProperty.all<EdgeInsets>(
+                  EdgeInsets.all(15.0),
+                ),
+                shape: MaterialStateProperty.all(
+                  RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(5.0)),
+                ),
+                backgroundColor:
+                    MaterialStateProperty.all<Color>(Colors.lightGreen),
+              ),
               onPressed: () {
                 // TODO add to friend list
               },
-              child: Text('Accept friend request')),
-          TextButton(onPressed: () {}, child: Text('Decline friend request')),
+              child: Text(
+                'Accept\nfriend request',
+                style: TextStyle(color: Colors.white),
+                textAlign: TextAlign.center,
+              )),
+          TextButton(
+              style: ButtonStyle(
+                padding: MaterialStateProperty.all<EdgeInsets>(
+                  EdgeInsets.all(15.0),
+                ),
+                shape: MaterialStateProperty.all(
+                  RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(5.0)),
+                ),
+                backgroundColor:
+                    MaterialStateProperty.all<Color>(Colors.redAccent),
+              ),
+              onPressed: () {},
+              child: Text(
+                'Decline\nfriend request',
+                style: TextStyle(
+                  color: Colors.white,
+                ),
+                textAlign: TextAlign.center,
+              )),
         ],
       );
     } else if (statusTemp == 2) {
       widget = TextButton(
+        style: kFilledButtonStyle,
         onPressed: () {
           // TODO send friend request
         },
-        child: Text('Send friend request'),
+        child:
+            Text('Send friend request', style: TextStyle(color: Colors.white)),
       );
     }
     return widget;

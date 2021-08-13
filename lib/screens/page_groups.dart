@@ -10,6 +10,7 @@ import 'package:meet_up_vor_2/api/models/UserGeneral.dart';
 import 'package:meet_up_vor_2/api/providers/LoginProvider.dart';
 import 'package:meet_up_vor_2/api/api_client.dart';
 import 'package:http/http.dart' as http;
+import 'package:meet_up_vor_2/api/providers/lists.dart';
 
 import '../main.dart';
 
@@ -55,96 +56,9 @@ class _GroupsPageState extends State<GroupsPage> {
     return userFuture;
   }
 
-  //
-  //
-  // hardcoded lists:
   List<Group> _hardcodeListOfGroups() {
-    List<Group> listOfGroups = new List.empty(growable: true);
-
-    List<EventMeeting> listOfEvents = new List.empty(growable: true);
-    EventMeeting event1 = new EventMeeting('aaa', 47.23962176969944,
-        9.597157658181816, 'Gin degustation', 'Fr 2.7.2021');
-    EventMeeting event2 = new EventMeeting('bbb', 47.23962176969944,
-        9.597157658181816, 'Whiskey degustation', 'Fr 9.7.2021');
-    EventMeeting event3 = new EventMeeting('ccc', 47.23962176969944,
-        9.597157658181816, 'Beer degustation', 'Fr 16.7.2021');
-    listOfEvents.add(event1);
-    listOfEvents.add(event2);
-    listOfEvents.add(event3);
-
-    List<UserGeneral> listOfUsers = new List.empty(growable: true);
-    UserGeneral friend1 = new UserGeneral(
-        'leonido24',
-        'leon.barrett@example.com',
-        'https://randomuser.me/api/portraits/men/29.jpg',
-        'I like lemon ice-cream.',
-        'Leon');
-    UserGeneral friend2 = new UserGeneral(
-        'ramanid',
-        'ramon.peck@example.com',
-        'https://randomuser.me/api/portraits/men/6.jpg',
-        'I like chocolate ice-cream.',
-        'Ramon');
-    UserGeneral friend3 = new UserGeneral(
-        'rossalinda',
-        'ross.bryant@example.com',
-        'https://randomuser.me/api/portraits/women/99.jpg',
-        'I like strawberry ice-cream.',
-        'Rossi');
-    UserGeneral friend4 = new UserGeneral(
-        'barretoo',
-        'leon.barrett@example.com',
-        'https://randomuser.me/api/portraits/men/62.jpg',
-        'I like cherry ice-cream.',
-        'Barret');
-    UserGeneral friend5 = new UserGeneral(
-        'pickle',
-        'ramon.peck@example.com',
-        'https://randomuser.me/api/portraits/women/85.jpg',
-        'I like vanilla ice-cream.',
-        'Pecky');
-    UserGeneral friend6 = new UserGeneral(
-        'bumblebee',
-        'ross.bryant@example.com',
-        'https://randomuser.me/api/portraits/men/47.jpg',
-        'I like ginger ice-cream.',
-        'Bryant');
-    listOfUsers.add(friend1);
-    listOfUsers.add(friend2);
-    listOfUsers.add(friend3);
-    listOfUsers.add(friend4);
-    listOfUsers.add(friend5);
-    listOfUsers.add(friend6);
-
-    Group group1 = new Group(
-        'monika.n',
-        'https://www.jolie.de/sites/default/files/styles/facebook/public/images/2017/07/14/partypeople.jpg?itok=H8Kltq60',
-        'The crazy people',
-        '1111',
-        listOfUsers,
-        listOfEvents);
-    Group group2 = new Group(
-        'jimmy',
-        'https://www.jolie.de/sites/default/files/styles/facebook/public/images/2017/07/14/partypeople.jpg?itok=H8Kltq60',
-        'The weird people',
-        '2222',
-        listOfUsers,
-        listOfEvents);
-    Group group3 = new Group(
-        'luca',
-        'https://www.jolie.de/sites/default/files/styles/facebook/public/images/2017/07/14/partypeople.jpg?itok=H8Kltq60',
-        'The awesome people',
-        '3333',
-        listOfUsers,
-        listOfEvents);
-    listOfGroups.add(group1);
-    listOfGroups.add(group2);
-    listOfGroups.add(group3);
-    return listOfGroups;
+    return Lists().hardcodeListOfGroups();
   }
-  //
-  //
-  //
 
   final _biggerFont = const TextStyle(fontSize: 18.0);
   late List<Group> _listOfGroups;

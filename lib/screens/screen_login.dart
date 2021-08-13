@@ -37,6 +37,8 @@ class _LoginScreenState extends State<LoginScreen> {
 
   // login mongoDB
   void _login(String userName, userPassword) async {
+    // TODO only for recording
+    // userPassword = '12345678';
     print('FEEDBACK at login - userName: ' +
         userName +
         ', password: ' +

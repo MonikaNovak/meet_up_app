@@ -35,7 +35,7 @@ class _GroupDetailState extends State<GroupDetail> {
     widget.token = arguments[0] as Token;
     widget.group = arguments[2] as Group;
     widget.userPassed = arguments[1] as User;
-    widget.admin = 'Mihai Sandoval';
+    widget.admin = widget.group.adminUsername;
     _buildEventList();
     return Scaffold(
       appBar: AppBar(
@@ -74,24 +74,29 @@ class _GroupDetailState extends State<GroupDetail> {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: <Widget>[
-            TextButton(
-              onPressed: () {
-                Navigator.pushNamed(context, 'members_list', arguments: [
-                  widget.token,
-                  widget.userPassed,
-                  widget.group.members,
-                  'Members'
-                ]);
-              },
-              child: Row(
-                  mainAxisAlignment: MainAxisAlignment.end,
-                  children: <Widget>[
-                    Text(
-                      'Show members',
-                      style: TextStyle(color: Colors.deepPurple),
-                    ),
-                    Icon(Icons.arrow_right, color: Colors.deepPurple),
-                  ]),
+            Row(
+              children: [
+                Expanded(child: SizedBox()),
+                TextButton(
+                  onPressed: () {
+                    Navigator.pushNamed(context, 'members_list', arguments: [
+                      widget.token,
+                      widget.userPassed,
+                      widget.group.members,
+                      'Members'
+                    ]);
+                  },
+                  child: Row(
+                      mainAxisAlignment: MainAxisAlignment.end,
+                      children: <Widget>[
+                        Text(
+                          'Show members',
+                          style: TextStyle(color: Colors.deepPurple),
+                        ),
+                        Icon(Icons.arrow_right, color: Colors.deepPurple),
+                      ]),
+                ),
+              ],
             ),
             Align(
               alignment: Alignment.centerLeft,
@@ -118,7 +123,15 @@ class _GroupDetailState extends State<GroupDetail> {
                 ),
               ),
             ),
-            SizedBox(
+            Align(
+              alignment: Alignment.centerLeft,
+              child: Text(
+                'Group admin: ' + widget.admin,
+                textAlign: TextAlign.left,
+                style: kTextStyleItalic,
+              ),
+            ),
+            /*SizedBox(
               height: 10.0,
             ),
             Expanded(
@@ -137,17 +150,17 @@ class _GroupDetailState extends State<GroupDetail> {
                     ),
                     TextButton(
                       onPressed: () {
-                        /*messageMap[messageMap.length + 1] = [
+                        */ /*messageMap[messageMap.length + 1] = [
                       widget.userFinal.userName,
                       messageText
-                    ];*/
+                    ];*/ /*
                       },
                       child: Text('Send'),
                     )
                   ],
                 ),
               ),
-            ),
+            ),*/
           ],
         ),
       ),
@@ -159,8 +172,9 @@ class _GroupDetailState extends State<GroupDetail> {
       return PopupMenuButton(
           icon: Icon(Icons.more_vert),
           itemBuilder: (context) => [
-                PopupMenuItem<int>(value: 0, child: Text('Delete group')),
-                PopupMenuItem<int>(value: 1, child: Text('Add friends'))
+                PopupMenuItem<int>(value: 1, child: Text('Delete group')),
+                PopupMenuItem<int>(value: 0, child: Text('Add friends')),
+                PopupMenuItem<int>(value: 2, child: Text('Create event'))
               ],
           onSelected: (value) => {_popUpMenuOptionsAdmin(value)});
     } else {
@@ -206,6 +220,8 @@ class _GroupDetailState extends State<GroupDetail> {
       // TODO add friends to group
     } else if (value.toString() == '1') {
       _showAlertDialogDeleteGroup(context);
+    } else if (value.toString() == '2') {
+      // TODO navigator to page create event (like group)
     }
   }
 

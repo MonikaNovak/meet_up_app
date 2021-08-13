@@ -37,7 +37,7 @@ ButtonStyle kFilledButtonStyle = ButtonStyle(
     EdgeInsets.all(15.0),
   ),
   shape: MaterialStateProperty.all(
-    RoundedRectangleBorder(borderRadius: BorderRadius.circular(12.0)),
+    RoundedRectangleBorder(borderRadius: BorderRadius.circular(5.0)),
   ),
   backgroundColor: MaterialStateProperty.all<Color>(Colors.deepPurple),
 );

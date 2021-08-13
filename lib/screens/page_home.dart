@@ -10,6 +10,7 @@ import 'package:meet_up_vor_2/api/models/Token.dart';
 import 'package:meet_up_vor_2/api/models/User.dart';
 import 'package:meet_up_vor_2/api/models/UserGeneral.dart';
 import 'package:meet_up_vor_2/api/providers/LoginProvider.dart';
+import 'package:meet_up_vor_2/api/providers/lists.dart';
 import 'package:meet_up_vor_2/constants.dart';
 import 'package:meet_up_vor_2/api/api_client.dart';
 import 'package:http/http.dart' as http;
@@ -91,117 +92,9 @@ class _HomePageState extends State<HomePage> {
     widget.userFinal = await _getUser(widget.token) as User;
   }
 
-  //
-  //
-  // hardcoded lists:
-  List<EventMeeting> _hardcodeListOfEvents() {
-    List<EventMeeting> listOfEvents = new List.empty(growable: true);
-    EventMeeting event1 = new EventMeeting('aaa', 47.23962176969944,
-        9.597157658181816, 'Gin degustation', 'Fr 2.7.2021');
-    EventMeeting event2 = new EventMeeting('bbb', 47.23962176969944,
-        9.597157658181816, 'Whiskey degustation', 'Fr 9.7.2021');
-    EventMeeting event3 = new EventMeeting('ccc', 47.23962176969944,
-        9.597157658181816, 'Beer degustation', 'Fr 16.7.2021');
-    listOfEvents.add(event1);
-    listOfEvents.add(event2);
-    listOfEvents.add(event3);
-    print('feedback - list of events hardcoded: ' +
-        listOfEvents[0].eventName +
-        listOfEvents[1].eventName +
-        listOfEvents[2].eventName);
-    return listOfEvents;
-  }
-
-  List<Group> _hardcodeListOfGroups() {
-    List<Group> listOfGroups = new List.empty(growable: true);
-
-    List<EventMeeting> listOfEvents = new List.empty(growable: true);
-    EventMeeting event1 = new EventMeeting('aaa', 47.23962176969944,
-        9.597157658181816, 'Gin degustation', 'Fr 2.7.2021');
-    EventMeeting event2 = new EventMeeting('bbb', 47.23962176969944,
-        9.597157658181816, 'Whiskey degustation', 'Fr 9.7.2021');
-    EventMeeting event3 = new EventMeeting('ccc', 47.23962176969944,
-        9.597157658181816, 'Beer degustation', 'Fr 16.7.2021');
-    listOfEvents.add(event1);
-    listOfEvents.add(event2);
-    listOfEvents.add(event3);
-
-    List<UserGeneral> listOfUsers = new List.empty(growable: true);
-    UserGeneral friend1 = new UserGeneral(
-        'leonido24',
-        'leon.barrett@example.com',
-        'https://randomuser.me/api/portraits/men/29.jpg',
-        'I like lemon ice-cream.',
-        'Leon');
-    UserGeneral friend2 = new UserGeneral(
-        'ramanid',
-        'ramon.peck@example.com',
-        'https://randomuser.me/api/portraits/men/6.jpg',
-        'I like chocolate ice-cream.',
-        'Ramon');
-    UserGeneral friend3 = new UserGeneral(
-        'rossalinda',
-        'ross.bryant@example.com',
-        'https://randomuser.me/api/portraits/women/99.jpg',
-        'I like strawberry ice-cream.',
-        'Rossi');
-    UserGeneral friend4 = new UserGeneral(
-        'barretoo',
-        'leon.barrett@example.com',
-        'https://randomuser.me/api/portraits/men/62.jpg',
-        'I like cherry ice-cream.',
-        'Barret');
-    UserGeneral friend5 = new UserGeneral(
-        'pickle',
-        'ramon.peck@example.com',
-        'https://randomuser.me/api/portraits/women/85.jpg',
-        'I like vanilla ice-cream.',
-        'Pecky');
-    UserGeneral friend6 = new UserGeneral(
-        'bumblebee',
-        'ross.bryant@example.com',
-        'https://randomuser.me/api/portraits/men/47.jpg',
-        'I like ginger ice-cream.',
-        'Bryant');
-    listOfUsers.add(friend1);
-    listOfUsers.add(friend2);
-    listOfUsers.add(friend3);
-    listOfUsers.add(friend4);
-    listOfUsers.add(friend5);
-    listOfUsers.add(friend6);
-
-    Group group1 = new Group(
-        'monika.n',
-        'https://www.jolie.de/sites/default/files/styles/facebook/public/images/2017/07/14/partypeople.jpg?itok=H8Kltq60',
-        'The crazy people',
-        '1111',
-        listOfUsers,
-        listOfEvents);
-    Group group2 = new Group(
-        'jimmy',
-        'https://www.jolie.de/sites/default/files/styles/facebook/public/images/2017/07/14/partypeople.jpg?itok=H8Kltq60',
-        'The weird people',
-        '2222',
-        listOfUsers,
-        listOfEvents);
-    Group group3 = new Group(
-        'luca',
-        'https://www.jolie.de/sites/default/files/styles/facebook/public/images/2017/07/14/partypeople.jpg?itok=H8Kltq60',
-        'The awesome people',
-        '3333',
-        listOfUsers,
-        listOfEvents);
-    listOfGroups.add(group1);
-    listOfGroups.add(group2);
-    listOfGroups.add(group3);
-    return listOfGroups;
-  }
-  //
-  //
-  //
-
   List<String> _locationsAddresses = new List.empty(growable: true);
   late List<EventMeeting> _listOfEvents;
+  late List<EventMeeting> _listOfEvents2;
   final _biggerFont = const TextStyle(fontSize: 18.0);
   late List<Group> hardocdedListOfGroups;
 
@@ -220,25 +113,34 @@ class _HomePageState extends State<HomePage> {
                 return Text('Error: ${snapshot.error}');
               else
                 widget.userFinal = snapshot.data as User;
-              _buildEventList();
+              _buildEventList1();
               return _buildWidget();
           }
         });
   }
 
   Widget _buildWidget() {
+    _listOfEvents2 = Lists().hardcodeListOfEvents2();
     return Scaffold(
       body: SafeArea(
         minimum: EdgeInsets.all(10.0),
         child: Column(
           children: <Widget>[
-            SizedBox(
-              height: 10.0,
-            ),
+            TextButton(
+                onPressed: () {
+                  // TODO go to pending requests
+                },
+                child: Text(
+                  'Pending friend requests: 1',
+                  style: TextStyle(
+                      color: Colors.deepPurple,
+                      fontWeight: FontWeight.bold,
+                      fontStyle: FontStyle.italic),
+                )),
             Align(
               alignment: Alignment.centerLeft,
               child: Text(
-                'Upcoming events:',
+                'Upcoming joined events:',
                 textAlign: TextAlign.left,
                 style: kTextStyleItalic,
               ),
@@ -297,19 +199,39 @@ class _HomePageState extends State<HomePage> {
               },
               child: Text('test get friends'),
             ),*/
+            SizedBox(
+              height: 10.0,
+            ),
             Align(
               alignment: Alignment.centerLeft,
               child: Text(
-                'New messages:',
+                'Recently added events:',
                 textAlign: TextAlign.left,
                 style: kTextStyleItalic,
               ),
             ),
+            SizedBox(
+              height: 10.0,
+            ),
             Expanded(
+              // TODO list recently created events
               flex: 3,
               child: Container(
                 decoration: kContainerBoxDecoration,
-                child: Text('ToDo messages'),
+                child: ListView.separated(
+                  separatorBuilder: (context, index) => Divider(
+                    height: 10.0,
+                    color: Colors.grey.shade300,
+                  ),
+                  shrinkWrap: true,
+                  padding: const EdgeInsets.all(0.0),
+                  itemCount: _listOfEvents2.length,
+                  itemBuilder: (context, i) {
+                    return _buildRowGrey(_listOfEvents2[i]
+                        //, _locationsAddresses[i]
+                        );
+                  },
+                ),
               ),
             ),
           ],
@@ -340,7 +262,7 @@ class _HomePageState extends State<HomePage> {
       ),
       subtitle: new Text('Time: ' + event.time + '\nLocation: ' + 'address'),
       onTap: () {
-        hardocdedListOfGroups = _hardcodeListOfGroups();
+        hardocdedListOfGroups = Lists().hardcodeListOfGroups();
         Group groupToPass = hardocdedListOfGroups[1];
         // TODO pass the correct group or link group
         Navigator.pushNamed(context, 'event_detail',
@@ -349,13 +271,47 @@ class _HomePageState extends State<HomePage> {
     );
   }
 
-  _buildEventList() async {
+  Widget _buildRowGrey(EventMeeting event
+      // , String address
+      ) {
+    return new ListTile(
+      // isThreeLine: true,
+      // contentPadding: EdgeInsets.all(10.0),
+      contentPadding: EdgeInsets.symmetric(vertical: 6.0, horizontal: 16.0),
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.circular(15.0),
+      ),
+      //tileColor: Colors.grey.shade200,
+      tileColor: Colors.transparent,
+      leading: new CircleAvatar(
+          backgroundColor: Colors.grey,
+          child: Icon(
+            Icons.location_on,
+            color: Colors.white,
+          )),
+      dense: true,
+      title: new Text(
+        event.eventName,
+        style: _biggerFont,
+      ),
+      subtitle: new Text('Time: ' + event.time + '\nLocation: ' + 'address'),
+      onTap: () {
+        hardocdedListOfGroups = Lists().hardcodeListOfGroups();
+        Group groupToPass = hardocdedListOfGroups[1];
+        // TODO pass the correct group or link group
+        Navigator.pushNamed(context, 'event_detail',
+            arguments: [event, groupToPass, widget.userFinal]);
+      },
+    );
+  }
+
+  _buildEventList1() async {
     List<EventMeeting> listOfEvents = new List.empty(growable: true);
     try {
       if (widget.token.token == '123456789') {
-        listOfEvents = _hardcodeListOfEvents();
+        listOfEvents = Lists().hardcodeListOfEvents1();
       } else {
-        listOfEvents = _hardcodeListOfEvents();
+        listOfEvents = Lists().hardcodeListOfEvents1();
         // listOfEvents = widget.userFinal.events; //TODO HARDCODED
       }
     } catch (exception) {
