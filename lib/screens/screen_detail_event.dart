@@ -144,6 +144,10 @@ class _EventDetailState extends State<EventDetail> {
                             fontSize: 15.0, fontWeight: FontWeight.bold),
                       );
                     }),
+                Text(
+                  widget.event.description,
+                  style: TextStyle(fontStyle: FontStyle.italic),
+                ),
                 SizedBox(
                   height: 10.0,
                 ),

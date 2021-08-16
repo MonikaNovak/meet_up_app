@@ -75,7 +75,7 @@ class _LoginScreenState extends State<LoginScreen> {
                 Form(
                   key: _formKey2,
                   child: TextFormField(
-                    initialValue: 'Mihai Sandoval', // for testing
+                    // initialValue: 'Mihai Sandoval', // for testing
                     decoration: InputDecoration(
                       isDense: true,
                       labelText: 'Username',
@@ -112,7 +112,7 @@ class _LoginScreenState extends State<LoginScreen> {
                   key: _formKey1,
                   autovalidateMode: AutovalidateMode.onUserInteraction,
                   child: TextFormField(
-                    initialValue: '12345678', // for testing
+                    // initialValue: '12345678', // for testing
                     decoration: InputDecoration(
                       isDense: true,
                       labelText: 'Password',
