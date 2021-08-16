@@ -142,7 +142,7 @@ class _AddFriendState extends State<AddFriend> {
                     height: 20.0,
                   ),
                   TextFormField(
-                    initialValue: 'barretoo',
+                    // initialValue: 'barretoo',
                     key: widget._formKey1,
                     decoration: InputDecoration(
                       isDense: true,

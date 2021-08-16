@@ -75,6 +75,7 @@ class _ImageCaptureState extends State<ImageCapture> {
                 size: 30,
               ),
               onPressed: () {
+                Navigator.pop(context);
                 // TODO update picture in database
               },
               color: Colors.deepPurple,

@@ -117,8 +117,8 @@ class Lists {
         'Everyone is welcome! Luca brings the guitar');
     EventMeeting event3 = new EventMeeting(
         'ccc',
-        47.29094217989792,
-        9.65780818911897,
+        47.431936442291644,
+        9.65505689651047,
         'D&D board game night',
         'We 18.8.2021',
         'Our casual gaming Wednesday (:');
@@ -138,7 +138,7 @@ class Lists {
         "Gin degustation at Suzie's",
         'Fr 12.8.2021',
         'Bring your favourite snacks, drinks provided ;)',
-        '');
+        'Dorfstraße 26, Feldkirch, 6800');
     EventMeetingAddress event2 = new EventMeetingAddress(
         'bbb',
         47.4824351762003,
@@ -146,15 +146,15 @@ class Lists {
         'Barbecue at the river',
         'Sat 13.8.2021',
         'Everyone is welcome! Luca brings the guitar',
-        '');
+        'Achweg 6922, Wolfurt, 6922');
     EventMeetingAddress event3 = new EventMeetingAddress(
         'ccc',
-        47.29094217989792,
-        9.65780818911897,
+        47.431936442291644,
+        9.65505689651047,
         'D&D board game night',
         'We 18.8.2021',
         'Our casual gaming Wednesday (:',
-        '');
+        'Pontenstraße 21/9, Lustenau, 6890');
     listOfEvents1.add(event1);
     listOfEvents1.add(event2);
     listOfEvents1.add(event3);
@@ -173,6 +173,30 @@ class Lists {
         "Gonna be hot, so let's cool down a bit");
     EventMeeting event2 = new EventMeeting('bbb', 47.49337377345543,
         9.724581079911998, "Mihai's Birthday", 'Sat 20.8.2021', 'No presents!');
+    listOfEvents2.add(event1);
+    listOfEvents2.add(event2);
+
+    return listOfEvents2;
+  }
+
+  List<EventMeetingAddress> hardcodeListOfEvents2Address() {
+    List<EventMeetingAddress> listOfEvents2 = new List.empty(growable: true);
+    EventMeetingAddress event1 = new EventMeetingAddress(
+        'aaa',
+        47.504726572867625,
+        9.734753972001204,
+        "For a swim at Strandbad",
+        'Th 18.8.2021',
+        "Gonna be hot, so let's cool down a bit",
+        'Strandweg 1, Bregenz, 6900');
+    EventMeetingAddress event2 = new EventMeetingAddress(
+        'bbb',
+        47.49337377345543,
+        9.724581079911998,
+        "Mihai's Birthday",
+        'Sat 20.8.2021',
+        'No presents!',
+        'Michael-Gaismayer-Straße 27, Bregenz, 6900');
     listOfEvents2.add(event1);
     listOfEvents2.add(event2);
 
@@ -240,14 +264,14 @@ class Lists {
         listOfEventsLocal1);
     Group group2 = new Group(
         'jimmy',
-        'https://www.jolie.de/sites/default/files/styles/facebook/public/images/2017/07/14/partypeople.jpg?itok=H8Kltq60',
+        'https://greenereduconsult.com/wp-content/uploads/2018/11/university-students-2.jpg',
         'The weird people',
         '2222',
         listOfUsersLocal,
         listOfEventsLocal2);
     Group group3 = new Group(
         'luca',
-        'https://www.jolie.de/sites/default/files/styles/facebook/public/images/2017/07/14/partypeople.jpg?itok=H8Kltq60',
+        'https://production-tcf.imgix.net/app/uploads/2016/05/13185858/ThinkstockPhotos-528889939.jpg?auto=format%2Ccompress&q=80&fit=crop&w=1200&h=600',
         'The awesome people',
         '3333',
         listOfUsersLocal,

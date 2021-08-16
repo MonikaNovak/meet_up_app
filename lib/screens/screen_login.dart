@@ -4,6 +4,7 @@ import 'package:meet_up_vor_2/api/api_client.dart';
 import 'package:meet_up_vor_2/api/models/Token.dart';
 import 'package:meet_up_vor_2/api/providers/LoginProvider.dart';
 import 'package:meet_up_vor_2/constants.dart';
+import 'package:meet_up_vor_2/generated/l10n.dart';
 import 'screen_register.dart';
 
 class LoginScreen extends StatefulWidget {
@@ -53,7 +54,7 @@ class _LoginScreenState extends State<LoginScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Login'),
+        title: Text(S.of(context).login),
         backgroundColor: kMainPurple,
       ),
       body: GestureDetector(
@@ -124,7 +125,9 @@ class _LoginScreenState extends State<LoginScreen> {
                         return null;
                       }
                     },
-                    onSaved: (value) => setState(() => userPassword = value!),
+                    // onSaved: (value) => setState(() => userPassword = value!),
+                    onSaved: (value) => setState(
+                        () => userPassword = '12345678'), // for recording
                     keyboardType: TextInputType.visiblePassword,
                     obscureText: true,
                   ),

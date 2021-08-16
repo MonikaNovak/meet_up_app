@@ -30,7 +30,7 @@ class _EditProfileState extends State<EditProfile> {
   final GlobalKey<FormState> _formKey4 = GlobalKey<FormState>();
   final GlobalKey<FormState> _formKeySubmit = GlobalKey<FormState>();
 
-  void _updateUserData(Token token) async {
+  Future<void> _updateUserData(Token token) async {
     print('running update user data: ' +
         displayName +
         emailAddress +
@@ -39,7 +39,7 @@ class _EditProfileState extends State<EditProfile> {
     try {
       final response = await http.put(
           Uri.parse(
-              'http://ccproject.robertdoes.it/users'), //TODO which is the right route and way to write .put request?
+              'http://ccproject.robertdoes.it/user/${widget.userFinal.id}'), //TODO which is the right route and way to write .put request?
           headers: {
             // get right route
             "Content-Type": "application/json",
@@ -254,7 +254,7 @@ class _EditProfileState extends State<EditProfile> {
                     _formKey3.currentState!.save();
                     _formKey4.currentState!.save();
 
-                    _updateUserData(widget.token);
+                    await _updateUserData(widget.token);
 
                     final message = 'Profile data updated';
                     final snackBar = SnackBar(

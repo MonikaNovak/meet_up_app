@@ -1,8 +1,12 @@
+import 'dart:convert';
 import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:meet_up_vor_2/api/models/Token.dart';
 import 'package:meet_up_vor_2/constants.dart';
 import 'package:email_validator/email_validator.dart';
+import 'package:http/http.dart' as http;
+
+import '../main.dart';
 
 class RegisterScreen extends StatefulWidget {
   @override
@@ -188,6 +192,29 @@ class _RegisterScreenState extends State<RegisterScreen> {
                 style: kFilledButtonStyle,
                 key: _formKeySubmit,
                 onPressed: () async {
+                  /*try {
+                    final response = await http.post(
+                        Uri.parse(
+                            'http://ccproject.robertdoes.it/users/register'), //TODO which is the right route and way to write .put request?
+                        headers: {
+                          // get right route
+                          "Content-Type": "application/json",
+                          "Charset": "utf-8",
+                          "Accept": "application/json",
+                        },
+                        body: jsonEncode({
+                          'displayName': displayName,
+                          'email': emailAddress,
+                          'statusMessage': statusMessage,
+                        }));
+                    if (response.statusCode == 200) {
+                      print('profile data updated succesfully, I guess');
+                    }
+                  } catch (err, stack) {
+                    logger.e("Login failed...", err, stack);
+                    throw err;
+                  }*/
+
                   if (_formKey1.currentState!.validate() &&
                       _formKey2.currentState!.validate() &&
                       _formKey3.currentState!.validate() &&

@@ -1,7 +1,9 @@
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:logger/logger.dart';
 import 'package:meet_up_vor_2/components/image_capture_widget.dart';
+import 'package:meet_up_vor_2/generated/l10n.dart';
 import 'package:meet_up_vor_2/screens/screen_detail_friend_add.dart';
 import 'package:meet_up_vor_2/screens/screen_detail_event.dart';
 import 'package:meet_up_vor_2/screens/screen_detail_friend_profile.dart';
@@ -44,6 +46,14 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
+      localizationsDelegates: [
+        S.delegate, // Add this line
+        GlobalMaterialLocalizations.delegate,
+        GlobalWidgetsLocalizations.delegate,
+        GlobalCupertinoLocalizations.delegate,
+      ],
+      supportedLocales: S.delegate.supportedLocales,
+      debugShowCheckedModeBanner: false,
       title: 'Flutter Demo',
       theme: ThemeData(
           primaryColor: Colors.deepPurple,

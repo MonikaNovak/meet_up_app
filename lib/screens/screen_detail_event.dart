@@ -32,6 +32,7 @@ class EventDetail extends StatefulWidget {
 class _EventDetailState extends State<EventDetail> {
   Set<Marker> _markers = {};
   String _address = '';
+  String eventJoined = '';
 
   void _onMapCreated(GoogleMapController controller) async {
     _markers.add(
@@ -54,6 +55,7 @@ class _EventDetailState extends State<EventDetail> {
     print(_placemarks.toString());
     print(place.toString());
     _address = '${place.street}, ${place.locality}, ${place.postalCode}';
+    print('address: ' + _address);
     _streamControllerAddress.sink.add(_address);
   }
 
@@ -67,6 +69,8 @@ class _EventDetailState extends State<EventDetail> {
 
   final StreamController<Set<Marker>> _streamController = StreamController();
   final StreamController<String> _streamControllerAddress = StreamController();
+  final StreamController<String> _streamControllerJoinEvent =
+      StreamController();
 
   @override
   Widget build(BuildContext context) {
@@ -143,16 +147,42 @@ class _EventDetailState extends State<EventDetail> {
                 SizedBox(
                   height: 10.0,
                 ),
-                TextButton(
-                  onPressed: () {
-                    // TODO join event and rebuild
-                  },
-                  child: Text(
-                    'Join event',
-                    style: TextStyle(color: Colors.white),
-                  ),
-                  style: kFilledButtonStyle,
-                ),
+                StreamBuilder<String>(
+                    stream: _streamControllerJoinEvent.stream,
+                    initialData: eventJoined,
+                    builder: (context, snapshot) {
+                      if (eventJoined == '') {
+                        return TextButton(
+                          onPressed: () {
+                            // TODO join event and rebuild
+                            eventJoined = 'Event joined';
+                            _streamControllerJoinEvent.sink.add(eventJoined);
+                          },
+                          child: Text(
+                            'Join event',
+                            style: TextStyle(color: Colors.white),
+                          ),
+                          style: kFilledButtonStyle,
+                        );
+                      } else {
+                        return Row(
+                          children: [
+                            Icon(
+                              Icons.check,
+                              color: Colors.lightGreen,
+                            ),
+                            Text(
+                              'Event joined.',
+                              style: TextStyle(
+                                fontStyle: FontStyle.italic,
+                                fontWeight: FontWeight.bold,
+                                color: Colors.deepPurple.shade300,
+                              ),
+                            ),
+                          ],
+                        );
+                      }
+                    }),
                 SizedBox(
                   height: 10.0,
                 ),
